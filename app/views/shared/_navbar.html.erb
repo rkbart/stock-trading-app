@@ -1,0 +1,65 @@
+<nav class="fixed top-0 left-0 w-full bg-gray-800 text-white shadow z-50">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+    
+    <!-- Left Section -->
+    <div class="text-lg font-semibold flex items-center space-x-4">
+      <%= link_to "RailsTrade", root_path, class: "hover:underline" %>
+      <div class="flex items-center space-x-4">
+        <%= link_to "Markets", pages_profile_path, class: "hover:underline" %>
+        <%= link_to "BUY", root_path, class: "text-green-500 hover:text-green-700 underline-offset-2 hover:underline" %>
+        <%= link_to "SELL", root_path, class: "text-red-500 hover:text-red-700 underline-offset-2 hover:underline" %>
+
+        <% if current_user&.admin? %>
+          <%= link_to "Admin Dashboard", admin_users_path, class: "text-blue-400 hover:text-blue-600 underline-offset-2 hover:underline" %>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Right Section -->
+    <div class="space-x-4">
+      <% if user_signed_in? %>
+        <div class="flex items-center space-x-4">
+
+          <%= link_to "Deposit", root_path, class: "bg-yellow-400 text-gray-900 px-2 py-1 rounded hover:bg-yellow-500 transition" %>
+
+          <!-- Dropdown Menu -->
+          <div x-data="{ open: false, timeoutId: null }" class="relative">
+            <button
+              @mouseover="open = true"
+              @mouseleave="timeoutId = setTimeout(() => open = false, 200)"
+              class="hover:underline focus:outline-none"
+            >
+              Account
+            </button>
+            <div
+              x-show="open"
+              x-transition:enter="transition ease-out duration-200"
+              x-transition:enter-start="opacity-0"
+              x-transition:enter-end="opacity-100"
+              x-transition:leave="transition ease-in duration-150"
+              x-transition:leave-start="opacity-100"
+              x-transition:leave-end="opacity-0"
+              @mouseover="clearTimeout(timeoutId)"
+              @mouseleave="timeoutId = setTimeout(() => open = false, 200)"
+              class="absolute right-0 mt-2 w-48 bg-gray-800 text-white rounded shadow-lg z-50"
+            >
+              <%= link_to "Profile", edit_user_registration_path, class: "block px-4 py-2 hover:bg-gray-700" %>
+              <%= link_to "Portfolio", pages_portfolio_path, class: "block px-4 py-2 hover:bg-gray-700" %>
+              <%= link_to "Transaction History", pages_profile_path, class: "block px-4 py-2 hover:bg-gray-700" %>
+              <%= link_to "Settings", "#", class: "block px-4 py-2 hover:bg-gray-700" %>
+              <%= link_to "About", "#", class: "block px-4 py-2 hover:bg-gray-700" %>
+            </div>
+          </div>
+
+          <%= link_to "Logout", destroy_user_session_path, data: { turbo_method: :delete }, class: "hover:underline" %>
+        </div>
+      <% else %>
+        <div class="flex items-center space-x-4">
+          <%= link_to "Login", new_user_session_path, class: "bg-gray-700 text-white px-4 py-1.5 rounded hover:bg-gray-600 transition" %>
+          <%= link_to "Sign Up", new_user_registration_path, class: "bg-yellow-400 text-gray-900 px-2 py-1.5 rounded hover:bg-yellow-500 transition" %>
+        </div>
+      <% end %>
+    </div>
+
+  </div>
+</nav>
