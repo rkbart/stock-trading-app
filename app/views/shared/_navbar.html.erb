@@ -20,7 +20,7 @@
       <% if user_signed_in? %>
         <div class="flex items-center space-x-4">
 
-          <%= link_to "Deposit", root_path, class: "bg-yellow-400 text-gray-900 px-2 py-1 rounded hover:bg-yellow-500 transition" %>
+          <%= link_to "Deposit", deposit_form_path, class: "bg-yellow-400 text-gray-900 px-2 py-1 rounded hover:bg-yellow-500 transition", data: {turbo_frame: "deposit_modal"} %>
 
           <!-- Dropdown Menu -->
           <div x-data="{ open: false, timeoutId: null }" class="relative">

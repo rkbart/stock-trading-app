@@ -14,6 +14,10 @@ Rails.application.routes.draw do
   get "pages/dashboard", to: "pages#dashboard"
   get "pages/profile", to: "pages#profile"
   get "pages/portfolio", to: "pages#portfolio"
+  
+  get 'deposit_form', to: 'pages#deposit_form', as: :deposit_form
+  post 'process_deposit', to: 'pages#process_deposit', as: :process_deposit
+
 
   # authenticated :user do
   #   root "pages#dashboard", as: :authenticated_root

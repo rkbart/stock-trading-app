@@ -27,6 +27,7 @@
   <body class="pt-16 bg-gray-800">
     <%= render 'shared/navbar' %>
     <%= yield %>
+    <%= turbo_frame_tag "modal"%>
     <footer class="fixed bottom-0 left-0 w-full bg-gray-800 text-white py-2 px-4 text-center italic">
       <p class="notice"><%= notice %></p>
       <p class="alert"><%= alert %></p>
