@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_24_123335) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_26_040506) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -21,6 +21,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_24_123335) do
     t.decimal "buy_price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "total"
     t.index ["portfolio_id"], name: "index_holdings_on_portfolio_id"
     t.index ["stock_id"], name: "index_holdings_on_stock_id"
   end
@@ -41,6 +42,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_24_123335) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "transactions", force: :cascade do |t|
+    t.bigint "stock_id", null: false
+    t.bigint "holding_id", null: false
+    t.integer "transaction_type"
+    t.integer "quantity"
+    t.integer "buy_price"
+    t.integer "total_amount"
+    t.date "transaction_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["holding_id"], name: "index_transactions_on_holding_id"
+    t.index ["stock_id"], name: "index_transactions_on_stock_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -51,6 +66,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_24_123335) do
     t.datetime "updated_at", null: false
     t.integer "role", default: 0
     t.string "status", default: "pending"
+    t.string "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string "unconfirmed_email"
+    t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -58,4 +78,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_24_123335) do
   add_foreign_key "holdings", "portfolios"
   add_foreign_key "holdings", "stocks"
   add_foreign_key "portfolios", "users"
+  add_foreign_key "transactions", "holdings"
+  add_foreign_key "transactions", "stocks"
 end

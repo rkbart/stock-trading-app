@@ -67,4 +67,6 @@ gem "devise", "~> 4.9"
 
 gem "tailwindcss-rails", "~> 4.2"
 
-gem 'whenever', require: false
+gem "whenever", require: false
+
+gem "letter_opener"

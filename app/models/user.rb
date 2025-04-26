@@ -1,8 +1,8 @@
 class User < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable, 
+         :confirmable
+
   has_one :portfolio, dependent: :destroy
   after_create :create_potfolio
 
@@ -10,7 +10,7 @@ class User < ApplicationRecord
 
   validates :status, inclusion: { in: %w[pending approved rejected] }
 
-  private
+ private
 
   def create_potfolio
     Portfolio.create!(user_id: self.id, balance: 0.0)

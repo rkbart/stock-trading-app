@@ -1,5 +1,4 @@
 class Admin::UsersController < ApplicationController
-  before_action :authenticate_user!
   before_action :require_admin
 
   def index
@@ -8,10 +7,22 @@ class Admin::UsersController < ApplicationController
 
   def approve
     user = User.find(params[:id])
-    if user.update(status: "approved")
+    if user.update(status: "approved", confirmed_at: Time.now)
       redirect_to admin_users_path, notice: "#{user.email} has been approved."
+      UserMailer.with(user: user).welcome_email.deliver_now
     else
       redirect_to admin_users_path, alert: "Could not approve user."
+    end
+  end
+
+  def reject
+    user = User.find(params[:id])
+    if user.update(status: "rejected")
+      redirect_to admin_users_path, notice: "#{user.email} has been rejected."
+      UserMailer.with(user: user).rejection_email.deliver_now
+      # user.destroy
+    else
+      redirect_to admin_users_path, alert: "Could not reject user."
     end
   end
 

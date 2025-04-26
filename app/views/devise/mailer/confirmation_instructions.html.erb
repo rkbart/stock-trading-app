@@ -1,5 +1,24 @@
-<p>Welcome <%= @email %>!</p>
+<div class="bg-gray-50 text-gray-800 font-sans px-6 py-8 max-w-xl mx-auto rounded-md shadow-md border border-gray-200">
+  <h2 class="text-2xl font-bold mb-4">Hello <%= @resource.email %> 👋</h2>
 
-<p>You can confirm your account email through the link below:</p>
+  <p class="mb-4">Thanks for signing up with <span class="font-semibold text-indigo-600">RailsTrade</span> — your gateway to smarter stock trading and portfolio management.</p>
+  
+  <p>Your registration is currently pending approval. Please wait while our team reviews your account.</p>
+  <p>You'll receive an email if your application is approved.</p>
 
-<p><%= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token) %></p>
+  <!--
+  <p class="mb-6">Click the button below to confirm your account:</p>
+  <a href="<%= user_confirmation_url(confirmation_token: @token) %>"
+    class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-md transition duration-200">
+    Confirm My Account
+  </a>
+  <p class="mb-4 text-sm text-gray-600">This link will expire in <span class="font-medium text-gray-800">3 days</span>.</p>
+  -->
+
+
+  <p class="text-sm text-gray-600">If you didn’t request this, please ignore this email.</p>
+
+  <p class="mt-6 font-medium">Cheers,<br>
+    <span class="text-indigo-600">RailsTrade Team</span>
+  </p>
+</div>

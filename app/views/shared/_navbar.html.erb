@@ -6,8 +6,8 @@
       <%= link_to "RailsTrade", root_path, class: "hover:underline" %>
       <div class="flex items-center space-x-4">
         <%= link_to "Markets", pages_profile_path, class: "hover:underline" %>
-        <%= link_to "BUY", root_path, class: "text-green-500 hover:text-green-700 underline-offset-2 hover:underline" %>
-        <%= link_to "SELL", root_path, class: "text-red-500 hover:text-red-700 underline-offset-2 hover:underline" %>
+        <%= link_to "BUY", buy_stocks_path, class: "text-green-500 hover:text-green-700 underline-offset-2 hover:underline" %>
+        <%= link_to "SELL", sell_stocks_path, class: "text-red-500 hover:text-red-700 underline-offset-2 hover:underline" %>
 
         <% if current_user&.admin? %>
           <%= link_to "Admin Dashboard", admin_users_path, class: "text-blue-400 hover:text-blue-600 underline-offset-2 hover:underline" %>
@@ -45,8 +45,8 @@
             >
               <%= link_to "Profile", edit_user_registration_path, class: "block px-4 py-2 hover:bg-gray-700" %>
               <%= link_to "Portfolio", pages_portfolio_path, class: "block px-4 py-2 hover:bg-gray-700" %>
-              <%= link_to "Transaction History", pages_profile_path, class: "block px-4 py-2 hover:bg-gray-700" %>
-              <%= link_to "Settings", "#", class: "block px-4 py-2 hover:bg-gray-700" %>
+              <%= link_to "Transaction History", transactions_path, class: "block px-4 py-2 hover:bg-gray-700" %>
+              <%= link_to "Settings", settings_path, class: "block px-4 py-2 hover:bg-gray-700" %>
               <%= link_to "About", "#", class: "block px-4 py-2 hover:bg-gray-700" %>
             </div>
           </div>

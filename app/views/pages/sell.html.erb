@@ -1,0 +1,90 @@
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 px-6 py-4">
+  <!-- Stock Listings Left -->
+  <div class="bg-white text-gray-800 rounded-lg shadow-md p-6 col-span-1 md:col-span-2 h-full overflow-auto">
+    <h2 class="text-2xl font-semibold mb-4">Stock Listings</h2>
+    <table class="w-full table-auto text-left">
+      <thead>
+        <tr class="border-b">
+          <th class="py-2">Symbol</th>
+          <th class="py-2">Pirce</th>
+          <th class="py-2">Shares</th>
+          <th class="py-2">Amount</th>
+          <th class="py-2"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @holdings.reject { |holding| holding.shares == 0 }.each do |holding| %>
+          <% stock = holding.stock %>
+          <tr class="border-b hover:bg-gray-100">
+            <td class="py-2"><%= stock[:symbol] %></td>
+            <td><%= number_to_currency(stock.last_price) %></td>
+            <td><%= holding.shares %></td>
+            <td><%= number_to_currency(holding.shares * stock.last_price) %></td>
+            <td>
+              <%= link_to "Select", sell_stocks_path(symbol: stock.symbol), method: :get, class: "bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Buy Stocks Right -->
+  <div class="col-span-1 space-y-6">
+    <!-- Balance / Holdings Section -->
+    <div class="bg-gray-700 p-4 rounded-lg shadow-md text-white">
+      <h2 class="text-xl font-semibold">Total Holdings</h2>
+      <p class="mt-2">Wallet: <%= number_to_currency(@balance) %></p>
+    </div>
+
+    <!-- Sell Form -->
+    <div class="bg-gray-700 p-4 rounded-lg shadow-md text-white">
+      <h2 class="text-xl font-semibold mb-4">Sell Stock</h2>
+
+      <%= form_with url: sell_stocks_path, method: :post, local: true do |form| %>
+        <div class="mb-4">
+          <%= form.label :symbol, "Selected Stock", class: "block text-sm font-medium mb-1" %>
+          <%= form.text_field :symbol, value: @selected_symbol, class: "w-full bg-gray-900 text-white border border-gray-600 rounded-md px-3 py-2", readonly: true %>
+        </div>
+
+        <div class="mb-4">
+          <%= form.label :price, "Sell Price", class: "block text-sm font-medium mb-1" %>
+          <%= form.text_field :price, value: number_with_precision(@selected_price.to_f, precision: 2), id: "sell-price", class: "w-full bg-gray-900 text-white border border-gray-600 rounded-md px-3 py-2", readonly: true %>
+        </div>
+
+        <div class="mb-4">
+          <%= form.label :quantity, "Quantity", class: "block text-sm font-medium mb-1" %>
+          <%= form.number_field :quantity, min: 1, max: @max_quantity, id: "sell-quantity", class: "w-full bg-gray-900 text-white border border-gray-600 rounded-md px-3 py-2", required: true %>
+          <small class="text-gray-400">Available shares: <%= @max_quantity %></small>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-1">Total Amount</label>
+          <input type="text" id="total-amount" readonly class="w-full bg-gray-900 text-white border border-gray-600 rounded-md px-3 py-2" value="$0.00">
+        </div>
+
+        <div class="flex justify-end">
+          <%= form.submit "Sell", class: "bg-red-400 hover:bg-red-500 text-white-900 px-4 py-2 rounded-md font-semibold cursor-pointer" %>
+        </div>
+      <% end %>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const priceInput = document.getElementById("sell-price");
+    const quantityInput = document.getElementById("sell-quantity");
+    const totalAmount = document.getElementById("total-amount");
+
+    function updateTotal() {
+      const price = parseFloat(priceInput.value.replace(/[^0-9.-]+/g,"")) || 0;
+      const quantity = parseInt(quantityInput.value) || 0;
+      const total = price * quantity;
+      totalAmount.value = `$${total.toFixed(2)}`;
+    }
+
+    quantityInput.addEventListener("input", updateTotal);
+  });
+</script>

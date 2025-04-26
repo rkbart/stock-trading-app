@@ -1,0 +1,32 @@
+<div class="mt-6 mx-10 bg-white py-4 rounded-lg shadow-md px-4">
+  <table class="w-full table-auto text-left">
+    <thead>
+      <tr class="border-b">
+        <th class="py-2">Transaction</th> 
+        <th class="py-2">Symbol</th>
+        <th class="py-2">Shares</th>
+        <th class="py-2">Price</th>
+        <th class="py-2">Total</th>
+        <th class="py-2">Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @transactions.each do |tx| %>
+        <tr class="border-b hover:bg-gray-50">
+          <td class="py-2 font-semibold <%= tx.transaction_type == "buy" ? 'text-green-600' : 'text-red-600' %>"><%= tx.transaction_type.capitalize %></td>
+          <td class="py-2"><%= tx.stock.symbol %></td>
+          <td class="py-2"><%= tx.quantity %></td>
+          <td class="py-2">$<%= number_with_precision(tx.buy_price, precision: 2) %></td>
+          <td class="py-2">$<%= number_with_precision(tx.total_amount, precision: 2) %></td>
+          <td class="py-2"><%= tx.transaction_date.strftime('%b %d, %Y') %></td>
+        </tr>
+      <% end %>
+      
+      <% if @transactions.empty? %>
+        <tr>
+          <td colspan="6" class="py-4 text-center text-gray-500">No transactions found</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

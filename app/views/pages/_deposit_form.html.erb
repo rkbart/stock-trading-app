@@ -3,7 +3,7 @@
     <div class="bg-gray-800 rounded-lg shadow-xl w-full max-w-md mx-auto p-6">
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-medium text-white">Deposit Funds</h3>
-        <%= link_to pages_portfolio_path, class: "text-gray-400 hover:text-gray-300", data: { turbo_frame: "deposit_modal" } do %>
+        <%= link_to pages_portfolio_path, class: "text-gray-400 hover:text-gray-300", data: { turbo_frame: "_top" } do %>
           <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -32,7 +32,7 @@
           <%= form.select :payment_method,
               ["Credit Card", "Bank Transfer", "PayPal"],
               { include_blank: "Select payment method" },
-              { class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-600 bg-gray-900 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" } %>
+              { required: true, class: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-600 bg-gray-900 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" } %>
         </div>
 
         <div class="mt-6 flex justify-end space-x-3">

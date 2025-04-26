@@ -1,11 +1,19 @@
-User.find_or_create_by!(email: "rk_bart@yahoo.com") do |user|
-  user.password = "password123"
-  user.password_confirmation = "password123"
-  user.role = :admin
-  user.status = "approved"
-end
+admin = User.new(
+  email: "rk_bart@yahoo.com",
+  password: "password123",
+  password_confirmation: "password123",
+  role: :admin,
+  status: "approved",
+  confirmed_at: Time.now,
+  confirmation_sent_at: Time.now
+)
+admin.save(validate: false) unless User.exists?(email: "rk_bart@yahoo.com")
 
-puts "Admin user created."
+# unless Portfolio.exists?(user_id: admin.id)
+#   Portfolio.create!(user_id: admin.id, balance: 100000.00)
+# end
+
+puts "Admin user created"
 
 stocks = [
   { symbol: 'AAPL', name: 'Apple Inc.' },
