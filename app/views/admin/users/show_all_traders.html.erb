@@ -1,0 +1,18 @@
+<div class="min-h-screen bg-gray-700 flex flex-col items-center py-10">
+  <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-3xl">
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">All Traders</h1>
+
+    <div class="space-y-4">
+      <% @list_of_traders.each do |user| %>
+        <div class="bg-gray-50 hover:bg-gray-100 p-4 rounded-lg shadow-sm flex items-center justify-between transition">
+          <div class="text-gray-700 font-medium">
+            <%= link_to user.email, admin_user_path(user), class: "hover:underline text-blue-600" %>
+          </div>
+          <div class="text-sm text-gray-500">
+            <%= user.status.capitalize %> | <%= user.role.capitalize %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

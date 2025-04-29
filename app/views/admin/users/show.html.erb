@@ -1,0 +1,49 @@
+<div class="flex-col items-center justify-center max-w-2xl mx-auto p-6 bg-gray-700 rounded-lg shadow-md ">
+  <h1 class="text-3xl font-bold text-white mb-4">
+  Trader's Profile
+  <%= link_to edit_admin_user_path(@user), class: "ml-2 text-yellow-400 hover:text-yellow-500" do %>
+    <i class="fa-solid fa-pen-to-square cursor-pointer"></i>
+  <% end %>
+</h1>
+
+  <div class="mb-4">
+    <h2 class="text-lg text-white font-semibold">Name</h2>
+    <p class="text-gray-300"><%= @user.first_name %> <%= @user.last_name %></p>
+  </div>
+
+  <div class="mb-4">
+    <h2 class="text-lg text-white font-semibold">Email</h2>
+    <p class="text-gray-300"><%= @user.email %></p>
+  </div>
+
+  <div class="mb-4">
+    <h2 class="text-lg text-white font-semibold">Birthday</h2>
+    <p class="text-gray-300"><%= @user.birthday.strftime("%B %d, %Y") %></p>
+  </div>
+
+  <div class="mb-4">
+    <h2 class="text-lg text-white font-semibold">Gender</h2>
+    <p class="text-gray-300"><%= @user.gender %></p>
+  </div>
+
+  <div class="mb-4">
+    <h2 class="text-lg text-white font-semibold">Address</h2>
+    <p class="text-gray-300"><%= @user.address %></p>
+  </div>
+
+  <div class="mb-4">
+    <h2 class="text-lg text-white font-semibold">Status</h2>
+    <p class="text-gray-300"><%= @user.status %></p>
+  </div>
+
+  <div class="mb-4">
+    <h2 class="text-lg text-white font-semibold">Role</h2>
+    <p class="text-gray-300"><%= @user.role %></p>
+  </div>
+
+  <div class="mt-6 flex justify-end gap-3">
+    <%#= link_to "Edit Profile", profiles_edit_path, class: "bg-yellow-400 hover:bg-yellow-500 text-white py-2 px-4 rounded-md" %>
+    <%= link_to "Back to Traders List", show_all_traders_admin_users_path, class: "bg-indigo-400 hover:bg-indigo-500 text-white py-2 px-4 rounded-md" %>
+  </div>
+</div>
+

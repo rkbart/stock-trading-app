@@ -1,0 +1,25 @@
+<div class="mt-6 bg-white p-4 rounded-lg shadow-md">
+    <table class="w-full table-auto text-left">
+      <thead>
+        <tr class="border-b">
+          <th class="py-2">Symbol</th>
+          <th class="py-2">Company</th>
+          <th class="py-2">Price</th>
+          <th class="py-2">Shares</th>
+          <th class="py-2">Total Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @holdings.each do |holding| %>
+          <% stock = holding.stock %> <!-- Access the associated stock object -->
+          <tr>
+            <td class="py-2"><%= stock.symbol %></td>
+            <td><%= stock.name %></td>
+            <td><%= number_to_currency(holding.buy_price) %></td>
+            <td><%= holding.shares %></td>
+            <td><%= number_to_currency(holding.total) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>

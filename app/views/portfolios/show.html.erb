@@ -2,13 +2,8 @@
   <div class="mt-6 bg-gray-700 p-4 rounded-lg shadow-md">
     <div class="flex justify-start space-x-2 items-center">
       <h2 class="text-3xl font-semibold text-white">Total Holdings</h2>
-      <%= link_to deposit_form_path, 
-        class: "bg-gray-600 text-white px-2 py-1 rounded hover:bg-gray-800 transition",
-        data: {turbo_frame: "deposit_modal"} do%>
-        Deposit
-        <% end %>
     </div>
-    <p class="text-gray-200 mt-2">Balance: <%= number_to_currency(@total_holdings) %></p>
+    <p class="text-gray-200 mt-2">Balance: <%= number_to_currency(@total_holdings_value) %></p>
     <%= turbo_frame_tag "balance" do %>
       <p class="text-gray-200 mt-2">Wallet: <%= number_to_currency(@balance) %></p>
     <% end %>
@@ -26,14 +21,20 @@
         </tr>
       </thead>
       <tbody>
-        <% @holdings.each do |holding| %>
-          <% stock = holding.stock %> <!-- Access the associated stock object -->
+        <% if @holdings.any? %> 
+          <% @holdings.each do |holding| %>
+            <% stock = holding.stock %>
+            <tr>
+              <td class="py-2"><%= stock.symbol %></td>
+              <td><%= stock.name %></td>
+              <td><%= number_to_currency(holding.buy_price) %></td>
+              <td><%= holding.shares %></td>
+              <td><%= number_to_currency(holding.total) %></td>
+            </tr>
+          <% end %>
+        <% else %>
           <tr>
-            <td class="py-2"><%= stock.symbol %></td>
-            <td><%= stock.name %></td>
-            <td><%= number_to_currency(holding.buy_price) %></td>
-            <td><%= holding.shares %></td>
-            <td><%= number_to_currency(holding.total) %></td>
+            <td colspan="5" class="py-2 text-center">No holdings found.</td>
           </tr>
         <% end %>
       </tbody>

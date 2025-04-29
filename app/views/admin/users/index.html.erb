@@ -1,23 +1,31 @@
-<div class="flex flex-col items-center  min-h-screen bg-gray-900 p-6">
-  <h1 class="text-2xl font-bold mb-6 text-white text-center">Pending Trader Approvals</h1>
+<div class="mt-6 mx-10 bg-white py-4 rounded-lg shadow-md px-4">
+  <h1 class="text-2xl font-bold mb-6 text-gray-800 text-center">Pending Trader Approvals</h1>
 
-  <table class="min-w-full bg-white rounded shadow-md">
-    <thead class="bg-gray-800 text-white">
-      <tr>
-        <th class="py-3 px-6 text-left">Email</th>
-        <th class="py-3 px-6 text-left">Status</th>
-        <th class="py-3 px-6 text-center">Actions</th>
+  <table class="w-full table-auto text-left">
+    <thead>
+      <tr class="border-b bg-gray-800 text-white">
+        <th class="py-2 px-4">Email</th>
+        <th class="py-2 px-4">Status</th>
+        <th class="py-2 px-4 text-center">Actions</th>
       </tr>
     </thead>
     <tbody>
       <% @pending_users.each do |user| %>
-        <tr class="border-t">
-          <td class="py-2 px-6"><%= user.email %></td>
-          <td class="py-2 px-6 capitalize"><%= user.status %></td>
-          <td class="py-2 px-6 flex justify-center space-x-2">
-            <%= button_to "Approve", approve_admin_user_path(user), method: :patch, class: "bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600" %>
-            <%= button_to "Reject", reject_admin_user_path(user), method: :patch, class: "bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" %>
+        <tr class="border-b hover:bg-gray-50">
+          <td class="py-2 px-4"><%= user.email %></td>
+          <td class="py-2 px-4 capitalize"><%= user.status %></td>
+          <td class="py-2 px-4">
+            <div class="flex justify-center space-x-2">
+              <%= button_to "Approve", approve_admin_user_path(user), method: :patch, class: "bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm" %>
+              <%= button_to "Reject", reject_admin_user_path(user), method: :patch, class: "bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm" %>
+            </div>
           </td>
+        </tr>
+      <% end %>
+
+      <% if @pending_users.empty? %>
+        <tr>
+          <td colspan="3" class="py-4 text-center text-gray-500">No pending traders.</td>
         </tr>
       <% end %>
     </tbody>

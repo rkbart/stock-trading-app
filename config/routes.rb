@@ -2,10 +2,18 @@ Rails.application.routes.draw do
   devise_for :users
 
   namespace :admin do
-    resources :users, only: [ :index ] do
+    resources :users, only: [ :index, :show, :edit, :update ] do
       member do
         patch :approve
         patch :reject
+        get :edit_role
+      end
+
+      collection do
+        get :show_all_traders
+        get :invite_trader
+        get :all_transactions
+        post :send_invite
       end
     end
   end
@@ -16,19 +24,58 @@ Rails.application.routes.draw do
     end
   end
 
-  get "pages/dashboard", to: "pages#dashboard"
-  get "pages/profile", to: "pages#profile"
-  get "pages/portfolio", to: "pages#portfolio"
-  get "settings", to: "pages#settings", as: :settings
-  get "transactions", to: "pages#transactions", as: :transactions
-  get "buy_stocks", to: "pages#buy"
-  post "buy_stocks", to: "pages#perform_buy"
+  # Dashboard
+  get "dashboard", to: "dashboard#index"
+  authenticated :user do
+    root "dashboard#index"
+  end
 
-  get "sell_stocks", to: "pages#sell"
-  post "sell_stocks", to: "pages#perform_sell"
+  # Portfolio
+  resource :portfolios, only: [ :show ]
+  get "portfolio", to: "portfolios#show"
 
+  # Stocks
+  resources :stocks, only: [ :index, :show ]
+
+  # Transactions
+  resources :transactions, only: [ :index ]
+
+  # Buy/Sell
+  resources :buys, only: [ :new, :create ] do
+    collection do
+      get "new/:symbol", to: "buys#new", as: "new_with_symbol"
+      post "create", to: "buys#create"
+    end
+  end
+
+  resources :sells, only: [ :new, :create ] do
+    collection do
+      get "new/:symbol", to: "sells#new", as: "new_with_symbol"
+      post "create", to: "sells#create"
+    end
+  end
+
+  # Deposits
+  resources :deposits, only: [:new, :create]
   get "deposit_form", to: "pages#deposit_form", as: :deposit_form
-  post "process_deposit", to: "pages#process_deposit", as: :process_deposit
 
-  root to: "pages#dashboard"
+  # Settings
+  resource :settings, only: [ :show, :update ]
+  patch "settings/update_role", to: "settings#update_role"
+
+  # Profiles
+  resource :profile, only: [:edit, :update, :show ]
+
+  # About
+  get "about", to: "pages#about"
+
+  # Home
+  get "home", to: "pages#home"
+
+
+  devise_scope :user do
+    unauthenticated do
+      root to: "devise/sessions#new", as: :unauthenticated_root
+    end
+  end
 end

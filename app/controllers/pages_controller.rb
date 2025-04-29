@@ -1,38 +1,8 @@
 class PagesController < ApplicationController
-  before_action :set_balance, only: [ :dashboard, :portfolio, :buy, :sell ]
-  before_action :set_user, only: [ :settings, :change_role ]
-  before_action :set_holdings, only: [ :portfolio, :sell ]
+  # before_action :set_balance, only: [ :dashboard, :portfolio, :buy, :sell ]
+  # before_action :set_user, only: [ :settings, :change_role ]
+  # before_action :set_holdings, only: [ :portfolio, :sell ]
 
-  def dashboard
-    @stocks = Rails.cache.fetch("stocks_data", expires_in: 12.hours) do
-      Stock.all.map do |stock|
-        response = AvaApi.fetch_records(stock.symbol)
-
-        if response && response["Meta Data"] && response["Time Series (Daily)"]
-          price = response["Time Series (Daily)"].values.first["1. open"].to_f
-
-          # Update stock.last_price in database
-          stock.update(last_price: price)
-
-          {
-            symbol: stock.symbol,
-            name: stock.name,
-            price: price
-          }
-        else
-          Rails.logger.error("Failed to fetch data for #{stock.symbol}: #{response.inspect}")
-          {
-            symbol: stock.symbol,
-            name: stock.name,
-            price: "N/A"
-          }
-        end
-      end
-    end
-  end
-
-
-  def portfolio; end
 
   def deposit_form
     render partial: "deposit_form"
@@ -52,7 +22,7 @@ class PagesController < ApplicationController
           format.turbo_stream do
             render turbo_stream: [
               turbo_stream.replace("balance", partial: "pages/balance", locals: { balance: @balance }),
-              turbo_stream.replace("deposit_modal", partial: "pages/empty_frame") # Replace with empty frame
+              turbo_stream.replace("deposit_modal", partial: "pages/empty_frame")
             ]
           end
           format.html { redirect_to pages_portfolio_path }
@@ -74,8 +44,6 @@ class PagesController < ApplicationController
       redirect_to settings_path, alert: "Failed to update role."
     end
   end
-
-  def transactions; end
 
   def perform_buy
     portfolio = current_user.portfolio
@@ -259,11 +227,12 @@ class PagesController < ApplicationController
   def holdings; end
 
   def transactions
-    # @transactions = Transaction.where(user_id: current_user.id).order(created_at: :desc)
     @transactions = Transaction.joins(holding: :portfolio)
                             .where(holdings: { portfolio_id: current_user.portfolio.id })
                             .order(transaction_date: :desc)
   end
+
+  def about; end
 
   private
 

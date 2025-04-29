@@ -19,8 +19,6 @@ stocks = [
   { symbol: 'AAPL', name: 'Apple Inc.' },
   { symbol: 'GOOGL', name: 'Alphabet Inc.' },
   { symbol: 'MSFT', name: 'Microsoft Corporation' },
-  { symbol: 'AMZN', name: 'Amazon.com Inc.' },
-  { symbol: 'TSLA', name: 'Tesla Inc.' },
   { symbol: 'META', name: 'Meta Platforms Inc.' },
   { symbol: 'NVDA', name: 'NVIDIA Corporation' }
 ]

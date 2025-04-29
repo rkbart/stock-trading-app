@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable, 
+         :recoverable, :rememberable, :validatable,
          :confirmable
 
   has_one :portfolio, dependent: :destroy
@@ -9,6 +9,10 @@ class User < ApplicationRecord
   enum :role, { trader: 0, admin: 1 }
 
   validates :status, inclusion: { in: %w[pending approved rejected] }
+
+  def balance
+    portfolio&.balance || 0
+  end
 
  private
 

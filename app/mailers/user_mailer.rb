@@ -2,6 +2,10 @@ class UserMailer < ApplicationMailer
   default from: "avionschoolproject@gmail.com"
   before_action :set_url
 
+  def invitation_email
+    mail(to: @user.email, subject: "You've been invited to RailsTrade App!")
+  end
+
   def welcome_email
     mail(to: @user.email, subject: "Welcome to RailsTrade App!")
   end

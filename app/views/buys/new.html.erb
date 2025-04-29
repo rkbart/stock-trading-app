@@ -18,7 +18,7 @@
             <td><%= stock[:name] %></td>
             <td>$<%= stock[:last_price] %></td>
             <td>
-              <%= link_to "Select", buy_stocks_path(symbol: stock[:symbol], price: stock[:last_price]), method: :get, class: "bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm" %>
+              <%= link_to "Select", new_with_symbol_buys_path(symbol: stock[:symbol], price: stock[:last_price]), method: :get, class: "bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm" %>
             </td>
           </tr>
         <% end %>
@@ -38,7 +38,7 @@
     <div class="bg-gray-700 p-4 rounded-lg shadow-md text-white">
       <h2 class="text-xl font-semibold mb-4">Buy Stock</h2>
 
-      <%= form_with url: buy_stocks_path, method: :post, local: true do |form| %>
+      <%= form_with url: buys_path, method: :post, local: true do |form| %>
         <div class="mb-4">
           <%= form.label :symbol, "Selected Stock", class: "block text-sm font-medium mb-1" %>
           <%= form.text_field :symbol, value: @selected_symbol, class: "w-full bg-gray-900 text-white border border-gray-600 rounded-md px-3 py-2", readonly: true %>
