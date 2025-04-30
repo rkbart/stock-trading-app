@@ -68,9 +68,6 @@ class Admin::UsersController < ApplicationController
 
   def all_transactions
     @all_transactions = Transaction.all
-    # @all_transactions = Transaction.joins(holding: :portfolio)
-    #                         .where(holdings: { portfolio_id: portfolio.id })
-    #                         .order(transaction_date: :desc)
   end
 
   def change_role

@@ -18,7 +18,7 @@
             <td><%= stock[:name] %></td>
             <td>$<%= stock[:last_price] %></td>
             <td>
-              <%= link_to "Select", new_with_symbol_buys_path(symbol: stock[:symbol], price: stock[:last_price]), method: :get, class: "bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm" %>
+              <%= link_to "Select", new_buy_with_symbol_path(symbol: stock[:symbol], price: stock[:last_price]), method: :get, class: "bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm" %>
             </td>
           </tr>
         <% end %>

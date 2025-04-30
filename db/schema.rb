@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_29_105637) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_30_180430) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -18,7 +18,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_29_105637) do
     t.bigint "portfolio_id", null: false
     t.bigint "stock_id", null: false
     t.integer "shares"
-    t.decimal "buy_price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "total"
@@ -43,8 +42,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_29_105637) do
   end
 
   create_table "transactions", force: :cascade do |t|
-    t.bigint "stock_id", null: false
-    t.bigint "holding_id", null: false
     t.integer "transaction_type"
     t.integer "quantity"
     t.integer "buy_price"
@@ -52,8 +49,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_29_105637) do
     t.date "transaction_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["holding_id"], name: "index_transactions_on_holding_id"
-    t.index ["stock_id"], name: "index_transactions_on_stock_id"
+    t.string "symbol"
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_transactions_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -83,6 +81,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_29_105637) do
   add_foreign_key "holdings", "portfolios"
   add_foreign_key "holdings", "stocks"
   add_foreign_key "portfolios", "users"
-  add_foreign_key "transactions", "holdings"
-  add_foreign_key "transactions", "stocks"
+  add_foreign_key "transactions", "users"
 end

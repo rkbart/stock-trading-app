@@ -1,9 +1,9 @@
 <div id="portfolio" class="max-w-3xl mx-auto p-6 shadow-lg rounded-xl">
   <div class="mt-6 bg-gray-700 p-4 rounded-lg shadow-md">
     <div class="flex justify-start space-x-2 items-center">
-      <h2 class="text-3xl font-semibold text-white">Total Holdings</h2>
+      <h2 class="text-3xl font-semibold text-white">Total Holdings: <%= number_to_currency(@total_holdings_value) %></h2>
     </div>
-    <p class="text-gray-200 mt-2">Balance: <%= number_to_currency(@total_holdings_value) %></p>
+    
     <%= turbo_frame_tag "balance" do %>
       <p class="text-gray-200 mt-2">Wallet: <%= number_to_currency(@balance) %></p>
     <% end %>
@@ -15,7 +15,7 @@
         <tr class="border-b">
           <th class="py-2">Symbol</th>
           <th class="py-2">Company</th>
-          <th class="py-2">Price</th>
+          <th class="py-2">Avg. Buy Price</th>
           <th class="py-2">Shares</th>
           <th class="py-2">Total Value</th>
         </tr>
@@ -27,7 +27,7 @@
             <tr>
               <td class="py-2"><%= stock.symbol %></td>
               <td><%= stock.name %></td>
-              <td><%= number_to_currency(holding.buy_price) %></td>
+              <td><%= number_to_currency(holding.average_price) %></td>
               <td><%= holding.shares %></td>
               <td><%= number_to_currency(holding.total) %></td>
             </tr>

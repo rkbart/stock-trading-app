@@ -1,13 +1,16 @@
 class ProfilesController < ApplicationController
   def edit; end
-  def show; end
+  def show
+    if @user.first_name.blank? || @user.last_name.blank? || @user.birthday.blank? || @user.gender.blank? || @user.address.blank?
+      redirect_to edit_profile_path, alert: "You haven't completed your profile yet."
+    end
+  end
 
   def update
-    # @user = current_user
     if @user.update(user_params)
       redirect_to profile_path, notice: "Profile updated successfully."
     else
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 

@@ -1,5 +1,5 @@
 class TransactionsController < ApplicationController
   def index
-    @transactions = Transaction.for_portfolio(current_user.portfolio.id).recent_first
+    @transactions = @user.transactions.order(transaction_date: :desc)
   end
 end

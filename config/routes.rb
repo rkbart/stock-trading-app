@@ -6,7 +6,7 @@ Rails.application.routes.draw do
       member do
         patch :approve
         patch :reject
-        get :edit_role
+        # get :edit_role
       end
 
       collection do
@@ -41,22 +41,14 @@ Rails.application.routes.draw do
   resources :transactions, only: [ :index ]
 
   # Buy/Sell
-  resources :buys, only: [ :new, :create ] do
-    collection do
-      get "new/:symbol", to: "buys#new", as: "new_with_symbol"
-      post "create", to: "buys#create"
-    end
-  end
+  resources :buys, only: [ :new, :create ]
+  get "buys/new/:symbol", to: "buys#new", as: "new_buy_with_symbol"
 
-  resources :sells, only: [ :new, :create ] do
-    collection do
-      get "new/:symbol", to: "sells#new", as: "new_with_symbol"
-      post "create", to: "sells#create"
-    end
-  end
+  resources :sells, only: [ :new, :create ]
+  get "sells/new/:symbol", to: "sells#new", as: "new_sell_with_symbol"
 
   # Deposits
-  resources :deposits, only: [:new, :create]
+  resources :deposits, only: [ :new, :create ]
   get "deposit_form", to: "pages#deposit_form", as: :deposit_form
 
   # Settings
@@ -64,7 +56,7 @@ Rails.application.routes.draw do
   patch "settings/update_role", to: "settings#update_role"
 
   # Profiles
-  resource :profile, only: [:edit, :update, :show ]
+  resource :profile, only: [ :edit, :update, :show ]
 
   # About
   get "about", to: "pages#about"

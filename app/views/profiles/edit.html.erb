@@ -14,26 +14,41 @@
         <div class="mb-4">
           <%= form.label :first_name, value: @user.first_name, class: "block text-sm font-medium text-white mb-1" %>
           <%= form.text_field :first_name, class: "block w-full px-3 py-2 bg-gray-900 text-white rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500" %>
+          <% if @user.errors[:first_name].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @user.errors[:first_name].first %></p>
+          <% end %>
         </div>
 
         <div class="mb-4">
           <%= form.label :last_name, class: "block text-sm font-medium text-white mb-1" %>
           <%= form.text_field :last_name, class: "block w-full px-3 py-2 bg-gray-900 text-white rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500" %>
+          <% if @user.errors[:last_name].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @user.errors[:first_name].first %></p>
+          <% end %>
         </div>
 
         <div class="mb-4">
           <%= form.label :birthday, class: "block text-sm font-medium text-white mb-1" %>
           <%= form.date_field :birthday, class: "block w-full px-3 py-2 bg-gray-900 text-white rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500" %>
+          <% if @user.errors[:birthday].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @user.errors[:first_name].first %></p>
+          <% end %>
         </div>
 
         <div class="mb-4">
           <%= form.label :gender, class: "block text-sm font-medium text-white mb-1" %>
           <%= form.select :gender, options_for_select(["Male", "Female", "Other"], @user.gender), {}, class: "block w-full px-3 py-2 bg-gray-900 text-white rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500" %>
+          <% if @user.errors[:gender].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @user.errors[:first_name].first %></p>
+          <% end %>
         </div>
 
         <div class="mb-4">
           <%= form.label :address, class: "block text-sm font-medium text-white mb-1" %>
           <%= form.text_area :address, rows: 3, class: "block w-full px-3 py-2 bg-gray-900 text-white rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500" %>
+          <% if @user.errors[:address].any? %>
+            <p class="text-red-500 text-sm mt-1"><%= @user.errors[:first_name].first %></p>
+          <% end %>
         </div>
 
         <div class="mt-6 flex justify-end space-x-3">

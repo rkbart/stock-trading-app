@@ -23,7 +23,7 @@
                 <td><%= holding.shares %></td>
                 <td><%= number_to_currency(holding.shares * stock.last_price) %></td>
                 <td>
-                  <%= link_to "Select", new_with_symbol_sells_path(symbol: stock.symbol), method: :get, class: "bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm" %>
+                  <%= link_to "Select", new_sell_with_symbol_path(symbol: stock.symbol), method: :get, class: "bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm" %>
                 </td>
               </tr>
             <% end %>

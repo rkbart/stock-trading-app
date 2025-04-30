@@ -9,4 +9,9 @@ class Holding < ApplicationRecord
   def value
     shares * stock.current_price
   end
+
+  def average_price
+    return 0 if shares.zero?
+    total / shares
+  end
 end

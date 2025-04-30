@@ -1,84 +1,84 @@
 class BuysController < ApplicationController
+  before_action :set_variables
+  before_action :set_balance
+
   def new
-    @stocks = Stock.with_price
-    @selected_symbol = params[:symbol]
+    @stocks = Stock.all
     @selected_price = nil
+    @max_quantity = nil
 
     if @selected_symbol.present?
       stock = Stock.find_by(symbol: @selected_symbol)
 
       if stock
-        @selected_price = stock.last_price
+        @selected_price = fetch_cached_price(@selected_symbol, "1. open")
+        @max_quantity = (@balance / @selected_price).floor if @selected_price.to_f.positive?
       else
         flash[:alert] = "Stock not found."
         redirect_to new_buy_path and return
       end
     end
-
-    if @selected_price.to_f.positive? && @balance
-      @max_quantity = (@balance / @selected_price).floor
-    else
-      @max_quantity = nil
-    end
   end
 
   def create
-    portfolio = current_user.portfolio
-    symbol = params[:symbol]
-    price = params[:price].to_f
+    portfolio = @user.portfolio
+    price = fetch_cached_price(@selected_symbol, "1. open")
     quantity = params[:quantity].to_i
     total_cost = price * quantity
+    stock = Stock.find_by(symbol: @selected_symbol)
 
-    # Validations
-    if symbol.blank? || price <= 0 || quantity <= 0
-      flash[:alert] = "Invalid purchase request."
-      redirect_to new_buy_path and return
-    end
-
-    # Find the stock
-    stock = Stock.find_by(symbol: symbol)
-    unless stock
-      flash[:alert] = "Stock not found."
-      redirect_to new_buy_path and return
-    end
-
-    # Check balance
     if portfolio.balance < total_cost
       flash[:alert] = "Insufficient balance to complete the purchase."
-      redirect_to new_with_symbol_buys_path(symbol: symbol) and return
+      redirect_to new_buy_with_symbol_path(@selected_symbol) and return
     end
 
-    # Process purchase
-    begin
-      ActiveRecord::Base.transaction do
-        # Deduct balance
-        portfolio.update!(balance: portfolio.balance - total_cost)
+    portfolio.update!(balance: portfolio.balance - total_cost)
 
-        # Find or create holding
-        holding = portfolio.holdings.find_or_initialize_by(stock_id: stock.id)
-        holding.shares ||= 0
-        holding.shares += quantity
-        holding.buy_price = price
-        holding.total = (holding.total || 0) + total_cost
-        holding.save!
+    holding = portfolio.holdings.find_or_initialize_by(stock_id: stock.id)
+    holding.shares ||= 0
+    holding.total ||= 0
 
-        # Create transaction record
-        Transaction.create!(
-          holding_id: holding.id,
-          stock_id: stock.id,
-          transaction_type: :buy,
-          quantity: quantity,
-          buy_price: price,
-          total_amount: total_cost,
-          transaction_date: Date.today
-        )
+    holding.update!(
+      shares: holding.shares + quantity,
+      total: holding.total + total_cost
+    )
+
+    Transaction.create!(
+      user: @user,
+      transaction_type: :buy,
+      symbol: @selected_symbol,
+      quantity: quantity,
+      buy_price: price,
+      total_amount: total_cost,
+      transaction_date: Date.today
+    )
+
+    redirect_to portfolio_path, notice: "Successfully bought #{quantity} shares of #{@selected_symbol}."
+  end
+
+  private
+
+  def set_variables
+    @selected_symbol = params[:symbol]
+    # @user = current_user
+  end
+
+  def set_balance
+    @balance = @user.portfolio.balance
+  end
+
+  def fetch_cached_price(symbol, price_key)
+    cache_key = "price_#{symbol}_#{price_key}_#{Date.today}"
+
+    Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+      response = AvaApi.fetch_records(symbol)
+      if response && response["Time Series (Daily)"]
+        response["Time Series (Daily)"].values.first[price_key].to_f
+      else
+        Rails.logger.error("Failed to fetch #{price_key} for #{symbol}: #{response.inspect}")
+        stock = Stock.find_by(symbol: symbol)
+        stock&.last_price || 0
       end
-
-      flash[:notice] = "Successfully bought #{quantity} shares of #{symbol}."
-      redirect_to portfolio_path
-    rescue => e
-      flash[:alert] = "Purchase failed: #{e.message}"
-      redirect_to new_buy_with_symbol_buys_path(symbol: symbol)
     end
   end
 end
