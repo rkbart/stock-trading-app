@@ -9,7 +9,7 @@ class User < ApplicationRecord
   enum :role, { trader: 0, admin: 1 }
 
   validates :status, inclusion: { in: %w[pending approved rejected] }
-  validates :first_name, :last_name, :birthday, :gender, :address, presence: true, on: :update
+  # validates :first_name, :last_name, :birthday, :gender, :address, presence: true, on: :update
 
 
   def balance

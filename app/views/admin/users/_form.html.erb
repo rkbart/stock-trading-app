@@ -1,15 +1,18 @@
-<div class="flex items-center justify-center min-h-screen bg-gray-700">
-  <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
-    <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Invite a Trader</h2>
+<div class="flex items-center justify-center min-h-screen bg-gray-700 px-4">
+  <div class="bg-white p-10 rounded-xl shadow-lg w-full max-w-lg border border-gray-200">
+    <h2 class="text-3xl font-semibold mb-8 text-center text-indigo-500">
+      <i class="fa-solid fa-envelope-circle-check mr-2"></i>
+      Invite a Trader
+    </h2>
 
     <%= form_with url: send_invite_admin_users_path, method: :post, local: true do |form| %>
-      <div class="mb-4">
-        <%= form.label :email, "Trader's Email", class: "block text-gray-700 text-sm font-semibold mb-2" %>
-        <%= form.email_field :email, required: true, class: "w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+      <div class="mb-6">
+        <%= form.label :email, "Trader's Email", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.email_field :email, required: true, placeholder: "name@example.com", class: "w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200" %>
       </div>
 
       <div class="flex justify-center">
-        <%= form.submit "Send Invite", class: "bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow cursor-pointer" %>
+        <%= form.submit "Send Invite", class: "bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-md shadow-md transition duration-300 cursor-pointer" %>
       </div>
     <% end %>
   </div>

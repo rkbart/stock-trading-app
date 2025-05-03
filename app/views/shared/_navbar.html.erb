@@ -1,81 +1,88 @@
-<nav class="fixed top-0 left-0 w-full bg-gray-800 text-white shadow z-50">
-  <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-    
+<nav class="fixed top-0 left-0 w-full bg-gray-900 text-white shadow-2xl z-50">
+  <div class="max-w-7xl mx-auto py-4 flex justify-between items-center">
+
     <!-- Left Section -->
-    <div class="text-lg font-semibold flex items-center space-x-4">
-      <%= link_to "RailsTrade", root_path, class: "hover:underline" %>
-      <div class="flex items-center space-x-4">
-        <% if current_user&.admin? %>
-          <div x-data="{ open: false, timeoutId: null }" class="relative">
-              <button
-                @mouseover="open = true"
-                @mouseleave="timeoutId = setTimeout(() => open = false, 200)"
-                class="text-indigo-400 hover:underline text-indigo-200 focus:outline-none cursor-pointer"
-              > Admin Menu </button>
-              <div
-                x-show="open"
-                x-transition:enter="transition ease-out duration-200"
-                x-transition:enter-start="opacity-0"
-                x-transition:enter-end="opacity-100"
-                x-transition:leave="transition ease-in duration-150"
-                x-transition:leave-start="opacity-100"
-                x-transition:leave-end="opacity-0"
-                @mouseover="clearTimeout(timeoutId)"
-                @mouseleave="timeoutId = setTimeout(() => open = false, 200)"
-                class="absolute right-0 mt-2 w-48 bg-gray-800 text-white rounded shadow-lg z-50"
-              >
-                <%= link_to "Invite Trader", invite_trader_admin_users_path, class: "block px-4 py-2 hover:bg-gray-700 text-indigo-400 hover:underline text-indigo-200" %>
-                <%= link_to "Trader's List", show_all_traders_admin_users_path, class: "block px-4 py-2 hover:bg-gray-700 text-indigo-400 hover:underline text-indigo-200" %>
-                <%= link_to "Transaction History",all_transactions_admin_users_path, class: "block px-4 py-2 hover:bg-gray-700 text-indigo-400 hover:underline text-indigo-200" %>
-                <%= link_to "Pending Approvals", admin_users_path, class: "block px-4 py-2 hover:bg-gray-700 text-indigo-400 hover:underline text-indigo-200" %>
-              </div>
-            </div>
-        <% else %>
-          <% if current_user&.trader? %>
-            <%= link_to profile_path do %>
-              <h2 class="flex items-center gap-2"><i class="fa-solid fa-user"></i><%= @user.email %></h2>
+    <div class="text-xl flex items-center space-x-6">
+      <%= link_to root_path, class: "hover:text-teal-300 transition duration-150 flex items-center space-x-2 font-medium" do %>
+        <i class="fa-solid fa-chart-simple"></i><span>RailsTrade</span>
+      <% end %>
+
+      <% if current_user&.admin? %>
+        <span><i class="fa-solid fa-user"></i> <%= @user.email %></span>
+        <div x-data="{ open: false, timeoutId: null }" class="relative">
+          <button
+            @mouseover="open = true"
+            @mouseleave="timeoutId = setTimeout(() => open = false, 200)"
+            class="text-indigo-300 hover:text-indigo-200 transition font-medium"
+          >
+            Admin Menu
+          </button>
+          <div
+            x-show="open"
+            x-transition
+            @mouseover="clearTimeout(timeoutId)"
+            @mouseleave="timeoutId = setTimeout(() => open = false, 200)"
+            class="absolute right-0 mt-2 w-52 bg-gray-800 rounded-xl shadow-xl z-50"
+          >
+            <%# Admin Links %>
+            <% ["Invite Trader", "Trader's List", "Transaction History", "Pending Approvals"].zip(
+                  [invite_trader_admin_users_path, show_all_traders_admin_users_path, all_transactions_admin_users_path, admin_users_path]
+               ).each do |label, path| %>
+              <%= link_to label, path, class: "block px-5 font-medium py-3 text-indigo-300 hover:bg-gray-700 hover:text-white transition" %>
             <% end %>
-            <%= link_to "BUY", new_buy_path, class: "text-green-500 hover:text-green-700 underline-offset-2 hover:underline" %>
-            <%= link_to "SELL", new_sell_path, class: "text-red-500 hover:text-red-700 underline-offset-2 hover:underline" %>
-          <% end %>
+          </div>
+        </div>
+      <% elsif current_user&.trader? %>
+        <%= link_to profile_path, class: "hover:text-teal-400 transition font-medium flex items-center space-x-2" do %>
+          <i class="fa-solid fa-user"></i>
+          <span><%= @user.email %></span>
         <% end %>
-      </div>
+        <%= link_to "BUY", new_buy_path, class: "text-green-400 hover:text-green-300 font-medium underline-offset-2 hover:underline" %>
+        <%= link_to "SELL", new_sell_path, class: "text-red-400 hover:text-red-300 font-medium underline-offset-2 hover:underline" %>
+      <% end %>
     </div>
 
     <!-- Right Section -->
-    <div class="space-x-4">
+    <div class="flex items-center space-x-6">
+
       <% if user_signed_in? %>
+        <%# Trader-specific options %>
         <% if current_user&.trader? %>
-          <div class="w-full flex jusstify-end items-center space-x-4">
-            
-              
-              <%= link_to "Deposit", new_deposit_path, class: "bg-yellow-400 text-gray-900 px-2 py-1 rounded hover:bg-yellow-500 transition", data: {turbo_frame: "deposit_modal"} %>
-              <!-- Dropdown Menu -->
-              <div x-data="{ open: false, timeoutId: null }" class="relative">
-                <button @mouseover="open = true"
-                        @mouseleave="timeoutId = setTimeout(() => open = false, 200)"
-                        class="hover:underline focus:outline-none cursor-pointer" > Account </button>
-                <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0"
-                    x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150"
-                    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" @mouseover="clearTimeout(timeoutId)" @mouseleave="timeoutId = setTimeout(() => open = false, 200)" class="absolute right-0 mt-2 w-48 bg-gray-800 text-white rounded shadow-lg z-50">
-                    
-                  <%#= link_to "Edit Profile", edit_profile_path(@user), class: "block px-4 py-2 hover:bg-gray-700" %>
-                  <%= link_to "View Profile", profile_path, class: "block px-4 py-2 hover:bg-gray-700" %>
-                  <%= link_to "Portfolio", portfolios_path, class: "block px-4 py-2 hover:bg-gray-700" %>
-                  <%= link_to "Transaction History", transactions_path, class: "block px-4 py-2 hover:bg-gray-700" %>
-                  <%= link_to "Settings", settings_path, class: "block px-4 py-2 hover:bg-gray-700" %>
-                  <%= link_to "About", about_path, class: "block px-4 py-2 hover:bg-gray-700" %>
-                </div>
-              </div>
-            
-          <% end %>
-            <%= link_to "Logout", destroy_user_session_path, data: { turbo_method: :delete }, class: "hover:underline" %>
+          <%= link_to "Deposit", new_deposit_path,
+                class: "bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg hover:bg-yellow-500 transition",
+                data: { turbo_frame: "deposit_modal" } %>
+
+          <!-- Trader Account Dropdown -->
+          <div x-data="{ open: false, timeoutId: null }" class="relative">
+            <button @mouseover="open = true"
+                    @mouseleave="timeoutId = setTimeout(() => open = false, 200)"
+                    class="hover:text-teal-300 transition font-medium cursor-pointer">
+              Account
+            </button>
+            <div x-show="open" x-transition
+                @mouseover="clearTimeout(timeoutId)"
+                @mouseleave="timeoutId = setTimeout(() => open = false, 200)"
+                class="absolute right-0 mt-2 w-52 bg-gray-800 rounded-xl shadow-lg z-50">
+              <% ["Dashboard", "View Profile", "Portfolio", "Transaction History", "Settings", "About"].zip(
+                  [root_path, profile_path, portfolios_path, transactions_path, settings_path, about_path]
+                ).each do |label, path| %>
+                <%= link_to label, path, class: "block px-5 py-3 hover:bg-gray-700 text-white transition" %>
+              <% end %>
+            </div>
           </div>
-        <% else %>
-          <div class="flex items-center space-x-4">
-            <%= link_to "Login", new_user_session_path, class: "bg-gray-700 text-white px-4 py-1.5 rounded hover:bg-gray-600 transition" %>
-            <%= link_to "Sign Up", new_user_registration_path, class: "bg-yellow-400 text-gray-900 px-2 py-1.5 rounded hover:bg-yellow-500 transition" %>
-          </div>
+        <% end %>
+
+        <!-- Show Logout for any signed-in user -->
+        <%= link_to "Logout", destroy_user_session_path,
+              data: { turbo_method: :delete },
+              class: "hover:text-red-400 transition font-medium" %>
+
+      <% else %>
+        <!-- Guest (not logged in) -->
+        <%= link_to "Login", new_user_session_path,
+              class: "bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition" %>
+        <%= link_to "Sign Up", new_user_registration_path,
+              class: "bg-yellow-400 text-gray-900 px-4 py-2 rounded-lg hover:bg-yellow-500 transition" %>
       <% end %>
     </div>
   </div>

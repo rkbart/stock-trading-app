@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "pages/home"
   devise_for :users
 
   namespace :admin do
@@ -6,7 +7,6 @@ Rails.application.routes.draw do
       member do
         patch :approve
         patch :reject
-        # get :edit_role
       end
 
       collection do
@@ -63,7 +63,6 @@ Rails.application.routes.draw do
 
   # Home
   get "home", to: "pages#home"
-
 
   devise_scope :user do
     unauthenticated do

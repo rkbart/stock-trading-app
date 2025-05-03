@@ -1,27 +1,27 @@
 class Admin::UsersController < ApplicationController
   before_action :require_admin
   before_action :authenticate_user!, unless: :devise_controller?
-  before_action :set_user_in_admin, only: %i[show change_role edit update]
+  before_action :set_user_in_admin, only: %i[show change_role edit update approve reject]
 
   def index
     @pending_users = User.trader.where(status: "pending")
   end
 
   def approve
-    user = User.find(params[:id])
-    if user.update(status: "approved", confirmed_at: Time.now)
-      redirect_to admin_users_path, notice: "#{user.email} has been approved."
-      UserMailer.with(user: user).welcome_email.deliver_now
+    # user = User.find(params[:id])
+    if @user.update!(status: "approved", confirmed_at: Time.now)
+      redirect_to admin_users_path, notice: "#{@user.email} has been approved."
+      UserMailer.with(user: @user).welcome_email.deliver_now
     else
       redirect_to admin_users_path, alert: "Could not approve user."
     end
   end
 
   def reject
-    user = User.find(params[:id])
-    if user.update(status: "rejected")
-      redirect_to admin_users_path, notice: "#{user.email} has been rejected."
-      UserMailer.with(user: user).rejection_email.deliver_now
+    # user = User.find(params[:id])
+    if @user.update(status: "rejected")
+      redirect_to admin_users_path, notice: "#{@user.email} has been rejected."
+      UserMailer.with(user: @user).rejection_email.deliver_now
       # user.destroy
     else
       redirect_to admin_users_path, alert: "Could not reject user."
@@ -61,8 +61,7 @@ class Admin::UsersController < ApplicationController
       flash[:notice] = "Invitation sent to #{email}."
       redirect_to admin_user_path(user)
     else
-      flash.now[:alert] = "Please enter a valid email."
-      render :invite_trader
+      render :invite_trader, aler: "Please enter a valid email."
     end
   end
 

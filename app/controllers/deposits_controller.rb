@@ -1,8 +1,8 @@
 class DepositsController < ApplicationController
-    def create
+  def create
     amount = params[:amount].to_f
-    # payment_method = params[:payment_method]
-    portfolio = current_user.portfolio
+    payment_method = params[:payment_method]
+    portfolio = @user.portfolio
 
     if amount.positive?
       portfolio.balance += amount
@@ -16,6 +16,15 @@ class DepositsController < ApplicationController
               turbo_stream.replace("deposit_modal", partial: "shared/empty_frame")
             ]
           end
+          Transaction.create!(
+            user: @user,
+            transaction_type: :deposit,
+            quantity: nil,
+            buy_price: amount,
+            symbol: payment_method,
+            total_amount: amount,
+            transaction_date: Date.today
+          )
           format.html { redirect_to portfolios_path }
         end
       else

@@ -1,5 +1,5 @@
 class TransactionsController < ApplicationController
   def index
-    @transactions = @user.transactions.order(transaction_date: :desc)
+    @transactions = @user.transactions.recent_first
   end
 end

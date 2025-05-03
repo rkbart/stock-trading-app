@@ -1,8 +1,8 @@
 class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
-  before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :authenticate_user!
+  before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_portfolio,  if: -> { current_user&.trader? }
   before_action :set_holdings, if: -> { current_user&.trader? }
   before_action :set_user
@@ -10,10 +10,8 @@ class ApplicationController < ActionController::Base
   # After Devise sign in
   def after_sign_in_path_for(resource)
     if resource.admin?
-      # admin_users_path
       home_path
     else
-      # root_path
       if resource.first_name.blank? || resource.last_name.blank?
         edit_profile_path
       else
@@ -21,6 +19,20 @@ class ApplicationController < ActionController::Base
       end
     end
   end
+
+  def fetch_api_response(symbol)
+    cache_key = "stock_api_response_#{symbol}_#{Date.today}"
+
+    Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+      begin
+        AvaApi.fetch_records(symbol)
+      rescue StandardError => e
+        Rails.logger.error("API fetch failed for #{symbol}: #{e.message}")
+        nil
+      end
+    end
+  end
+
 
   private
 
@@ -30,7 +42,8 @@ class ApplicationController < ActionController::Base
   end
 
   def set_holdings
-    @holdings = @portfolio.holdings.includes(:stock).with_shares.by_symbol
+    @holdings = @portfolio.holdings.includes(:stock).with_shares # scope where shares > 0
+    # @holdings = @portfolio.holdings.includes(:stock).with_shares.by_symbol # alphabetical sorting
     @total_holdings_value = @holdings.sum { |holding| holding.value }
   end
 

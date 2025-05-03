@@ -14,8 +14,7 @@ class BuysController < ApplicationController
         @selected_price = fetch_cached_price(@selected_symbol, "1. open")
         @max_quantity = (@balance / @selected_price).floor if @selected_price.to_f.positive?
       else
-        flash[:alert] = "Stock not found."
-        redirect_to new_buy_path and return
+        redirect_to new_buy_path, alert: "Stock not found." and return
       end
     end
   end
@@ -28,8 +27,7 @@ class BuysController < ApplicationController
     stock = Stock.find_by(symbol: @selected_symbol)
 
     if portfolio.balance < total_cost
-      flash[:alert] = "Insufficient balance to complete the purchase."
-      redirect_to new_buy_with_symbol_path(@selected_symbol) and return
+      redirect_to new_buy_with_symbol_path(@selected_symbol), alert: "Insufficient balance to complete the purchase." and return
     end
 
     portfolio.update!(balance: portfolio.balance - total_cost)
@@ -53,14 +51,13 @@ class BuysController < ApplicationController
       transaction_date: Date.today
     )
 
-    redirect_to portfolio_path, notice: "Successfully bought #{quantity} shares of #{@selected_symbol}."
+    redirect_to portfolio_path, notice: quantity > 1 ? "Successfully bought #{quantity} shares of #{@selected_symbol}." : "Successfully bought 1 share of #{@selected_symbol}."
   end
 
   private
 
   def set_variables
     @selected_symbol = params[:symbol]
-    # @user = current_user
   end
 
   def set_balance
@@ -68,17 +65,14 @@ class BuysController < ApplicationController
   end
 
   def fetch_cached_price(symbol, price_key)
-    cache_key = "price_#{symbol}_#{price_key}_#{Date.today}"
+    response = fetch_api_response(symbol)
 
-    Rails.cache.fetch(cache_key, expires_in: 12.hours) do
-      response = AvaApi.fetch_records(symbol)
-      if response && response["Time Series (Daily)"]
-        response["Time Series (Daily)"].values.first[price_key].to_f
-      else
-        Rails.logger.error("Failed to fetch #{price_key} for #{symbol}: #{response.inspect}")
-        stock = Stock.find_by(symbol: symbol)
-        stock&.last_price || 0
-      end
+    if response && response["Time Series (Daily)"]
+      response["Time Series (Daily)"].values.first[price_key].to_f
+    else
+      Rails.logger.error("Failed to fetch #{price_key} for #{symbol}: #{response.inspect}")
+      stock = Stock.find_by(symbol: symbol)
+      stock&.last_price || 0
     end
   end
 end

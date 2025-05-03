@@ -4,20 +4,12 @@ class SellsController < ApplicationController
   before_action :set_variables
 
   def new
-    @stocks = Stock.all
-    @selected_price = nil
-    @max_quantity = nil
+    symbol = params[:symbol]
+    stock = Stock.find_by(symbol: symbol)
+    holding = @user.portfolio.holdings.find_by(stock: stock)
 
-    return unless @selected_symbol.present?
-
-    holding = @holdings.find { |h| h.stock.symbol == @selected_symbol }
-
-    if holding
-      @max_quantity = holding.shares
-      @selected_price = fetch_cached_price(@selected_symbol, holding.stock.last_price)
-    else
-      redirect_to portfolios_path, alert: "Stock not found in your portfolio"
-    end
+    @selected_symbol = symbol
+    @max_quantity = holding&.shares || 0
   end
 
   def create
@@ -29,31 +21,28 @@ class SellsController < ApplicationController
       return
     end
 
-    price = fetch_cached_price(@selected_symbol, holding.stock.last_price)
+    price = @selected_price
     total_amount = price * quantity
 
-    # Update portfolio balance
     portfolio = @user.portfolio
     portfolio.update!(balance: portfolio.balance + total_amount)
 
-    # Update holding
     holding.update!(
       shares: holding.shares - quantity,
       total: holding.total - total_amount
     )
 
-    # Record the transaction
     Transaction.create!(
       user: @user,
       transaction_type: :sell,
       symbol: @selected_symbol,
       quantity: quantity,
-      buy_price: price,
+      buy_price: @selected_price,
       total_amount: total_amount,
       transaction_date: Date.today
     )
 
-    redirect_to portfolios_path, notice: "Successfully sold #{quantity} shares of #{@selected_symbol} for #{number_to_currency(total_amount)}."
+    redirect_to portfolios_path, notice: quantity == 1 ? "Successfully sold 1 share of #{@selected_symbol} for #{number_to_currency(total_amount)}." : "Successfully sold #{quantity} shares of #{@selected_symbol} for #{number_to_currency(total_amount)}."
   end
 
   private
@@ -64,23 +53,19 @@ class SellsController < ApplicationController
   end
 
   def set_variables
-    # @user = current_user
     @selected_symbol = params[:symbol]
+    @selected_price = fetch_cached_price(@selected_symbol, "4. close")
   end
 
-  # 📦 Fetch and cache API price for a symbol
-  def fetch_cached_price(symbol, fallback_price = 0)
-    cache_key = "close_price_#{symbol}_#{Date.today}"
+  def fetch_cached_price(symbol, price_key)
+    response = fetch_api_response(symbol)
 
-    Rails.cache.fetch(cache_key, expires_in: 12.hours) do
-      response = AvaApi.fetch_records(symbol)
-
-      if response && response["Meta Data"] && response["Time Series (Daily)"]
-        response["Time Series (Daily)"].values.first["4. close"].to_f
-      else
-        Rails.logger.error("Failed to fetch close price for #{symbol}: #{response.inspect}")
-        fallback_price || 0
-      end
+    if response && response["Time Series (Daily)"]
+      response["Time Series (Daily)"].values.first[price_key].to_f
+    else
+      Rails.logger.error("Failed to fetch #{price_key} for #{symbol}: #{response.inspect}")
+      stock = Stock.find_by(symbol: symbol)
+      stock&.last_price || 0
     end
   end
 end

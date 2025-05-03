@@ -9,10 +9,6 @@ admin = User.new(
 )
 admin.save(validate: false) unless User.exists?(email: "rk_bart@yahoo.com")
 
-# unless Portfolio.exists?(user_id: admin.id)
-#   Portfolio.create!(user_id: admin.id, balance: 100000.00)
-# end
-
 puts "Admin user created"
 
 stocks = [

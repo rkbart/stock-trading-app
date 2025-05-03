@@ -1,32 +1,32 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 px-6 py-4">
   <!-- Stock Listings Left -->
-  <div class="bg-white text-gray-800 rounded-lg shadow-md p-6 col-span-1 md:col-span-2 h-full overflow-auto">
-    <h2 class="text-2xl font-semibold mb-4">Stock Listings</h2>
+  <div class="bg-gray-800 text-white rounded-lg shadow-md p-6 col-span-1 md:col-span-2 h-full overflow-auto">
+    <h2 class="text-2xl font-semibold mb-4 text-yellow-300">Your Holdings</h2>
     <table class="w-full table-auto text-left">
       <thead>
-        <tr class="border-b">
-          <th class="py-2">Symbol</th>
-          <th class="py-2">Pirce</th>
-          <th class="py-2">Shares</th>
-          <th class="py-2">Amount</th>
-          <th class="py-2"></th>
+        <tr class="border-b border-gray-600">
+          <th class="py-2 text-gray-400">Symbol</th>
+          <th class="py-2 text-gray-400">Avg Buy Price</th>
+          <th class="py-2 text-gray-400">Shares</th>
+          <th class="py-2 text-gray-400">Current Value</th>
+          <th class="py-2 text-gray-400"></th>
         </tr>
       </thead>
       <tbody>
         <% available_holdings = @holdings.reject { |holding| holding.shares == 0 } %>
-          <% if available_holdings.any? %>
-            <% available_holdings.each do |holding| %>
-              <% stock = holding.stock %>
-              <tr class="border-b hover:bg-gray-100">
-                <td class="py-2"><%= stock[:symbol] %></td>
-                <td><%= number_to_currency(stock.last_price) %></td>
-                <td><%= holding.shares %></td>
-                <td><%= number_to_currency(holding.shares * stock.last_price) %></td>
-                <td>
-                  <%= link_to "Select", new_sell_with_symbol_path(symbol: stock.symbol), method: :get, class: "bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm" %>
-                </td>
-              </tr>
-            <% end %>
+        <% if available_holdings.any? %>
+          <% available_holdings.each do |holding| %>
+            <% stock = holding.stock %>
+            <tr class="border-b border-gray-700 hover:bg-gray-700/50">
+              <td class="py-5 font-bold text-white"><%= stock[:symbol] %></td>
+              <td class="text-gray-300"><%= number_to_currency(holding.average_price) %></td>
+              <td class="text-gray-300"><%= holding.shares %></td>
+              <td class="text-green-400"><%= number_to_currency(holding.shares * stock.last_price) %></td>
+              <td>
+                <%= link_to "Select", new_sell_with_symbol_path(symbol: stock.symbol), method: :get, class: "bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded text-sm" %>
+              </td>
+            </tr>
+          <% end %>
         <% else %>
           <tr>
             <td colspan="5" class="text-center py-4 text-gray-500">
@@ -35,66 +35,64 @@
           </tr>
         <% end %>
       </tbody>
-
     </table>
   </div>
 
-  <!-- Buy Stocks Right -->
+  <!-- Sell Stocks Right -->
   <div class="col-span-1 space-y-6">
     <!-- Balance / Holdings Section -->
     <div class="bg-gray-700 p-4 rounded-lg shadow-md text-white">
-      <h2 class="text-xl font-semibold">Total Holdings</h2>
+      <h2 class="text-xl font-semibold text-yellow-300">Total Assets</h2>
       <p class="mt-2">Wallet: <%= number_to_currency(@balance) %></p>
     </div>
 
     <!-- Sell Form -->
     <div class="bg-gray-700 p-4 rounded-lg shadow-md text-white">
-      <h2 class="text-xl font-semibold mb-4">Sell Stock</h2>
+      <h2 class="text-xl font-semibold mb-4 text-yellow-300">Sell Stock</h2>
 
       <%= form_with url: sells_path, method: :post, local: true do |form| %>
         <div class="mb-4">
-          <%= form.label :symbol, "Selected Stock", class: "block text-sm font-medium mb-1" %>
+          <%= form.label :symbol, "Selected Stock", class: "block text-sm font-medium mb-1 text-gray-300" %>
           <%= form.text_field :symbol, value: @selected_symbol, class: "w-full bg-gray-900 text-white border border-gray-600 rounded-md px-3 py-2", readonly: true %>
         </div>
 
         <div class="mb-4">
-          <%= form.label :price, "Sell Price", class: "block text-sm font-medium mb-1" %>
+          <%= form.label :price, "Sell Price", class: "block text-sm font-medium mb-1 text-gray-300" %>
           <%= form.text_field :price, value: number_with_precision(@selected_price.to_f, precision: 2), id: "sell-price", class: "w-full bg-gray-900 text-white border border-gray-600 rounded-md px-3 py-2", readonly: true %>
         </div>
 
         <div class="mb-4">
-          <%= form.label :quantity, "Quantity", class: "block text-sm font-medium mb-1" %>
+          <%= form.label :quantity, "Quantity", class: "block text-sm font-medium mb-1 text-gray-300" %>
           <div class="flex gap-2">
             <%= form.number_field :quantity, min: 1, max: @max_quantity, id: "sell-quantity", class: "flex-1 bg-gray-900 text-white border border-gray-600 rounded-md px-3 py-2", required: true %>
-            <!-- MAX Button -->
             <button type="button" id="max-button" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md cursor-pointer">
               MAX
             </button>
           </div>
           <small class="text-gray-400">Available shares: <%= @max_quantity %></small>
         </div>
-        
+
         <div class="mb-4">
-          <label class="block text-sm font-medium mb-1">Total Amount</label>
-          <div class="flex gap-2">
-            <input type="text" id="total-amount" readonly class="w-full bg-gray-900 text-white border border-gray-600 rounded-md px-3 py-2" value="$0.00">
-            <div class="flex justify-end">
-              <%= form.submit "Sell", class: "bg-red-400 hover:bg-red-500 text-white-900 px-4 py-2 rounded-md font-semibold cursor-pointer" %>
-            </div>
-          </div>
+          <label class="block text-sm font-medium mb-1 text-gray-300">Total Amount</label>
+          <input type="text" id="total-amount" readonly class="w-full bg-gray-900 text-white border border-gray-600 rounded-md px-3 py-2" value="$0.00">
+        </div>
+
+        <div class="flex justify-end">
+          <%= form.submit "Sell", class: "bg-red-500 hover:bg-red-600 text-gray-900 px-4 py-2 rounded-md font-semibold cursor-pointer" %>
         </div>
       <% end %>
-
     </div>
   </div>
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
+  function setupSellForm() {
     const priceInput = document.getElementById("sell-price");
     const quantityInput = document.getElementById("sell-quantity");
     const totalAmount = document.getElementById("total-amount");
     const maxButton = document.getElementById("max-button");
+
+    if (!priceInput || !quantityInput || !totalAmount || !maxButton) return;
 
     function updateTotal() {
       const price = parseFloat(priceInput.value.replace(/[^0-9.-]+/g,"")) || 0;
@@ -104,10 +102,11 @@
     }
 
     quantityInput.addEventListener("input", updateTotal);
-
     maxButton.addEventListener("click", function() {
-      quantityInput.value = <%= @max_quantity %>; // Ruby injects value
-      updateTotal(); // update total automatically
+      quantityInput.value = parseInt(quantityInput.max);
+      updateTotal();
     });
-  });
+  }
+
+  document.addEventListener("turbo:load", setupSellForm);
 </script>

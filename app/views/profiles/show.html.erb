@@ -1,38 +1,52 @@
-<div class="max-w-2xl mx-auto mt-6 p-6 bg-gray-700 rounded-lg shadow-md">
-  <h1 class="text-3xl font-bold text-white mb-4">Trader's Profile</h1>
-
-  <div class="mb-4">
-    <h2 class="text-lg text-white font-semibold">Name</h2>
-    <p class="text-gray-300"><%= @user.first_name %> <%= @user.last_name %></p>
+<div class="flex flex-col items-center justify-center max-w-3xl mx-auto mt-6 p-8 bg-gray-700 rounded-2xl shadow-xl">
+  <div class="w-full flex items-center justify-between mb-8">
+    <h1 class="text-3xl md:text-4xl font-semibold text-white">
+      Trader's Profile <i class="fa-regular fa-address-card"></i>
+    </h1>
   </div>
 
-  <div class="mb-4">
-    <h2 class="text-lg text-white font-semibold">Email</h2>
-    <p class="text-gray-300"><%= @user.email %></p>
+  <!-- Profile Info Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+    <!-- Name -->
+    <div class="bg-gray-700 rounded-lg p-4 shadow-sm">
+      <h2 class="text-lg font-semibold text-indigo-300"><i class="fa-solid fa-user mr-2"></i>Name</h2>
+      <p class="text-white text-lg mt-1"><%= @user.first_name %> <%= @user.last_name %></p>
+    </div>
+
+    <!-- Email -->
+    <div class="bg-gray-700 rounded-lg p-4 shadow-sm">
+      <h2 class="text-lg font-semibold text-indigo-300"><i class="fa-solid fa-envelope mr-2"></i>Email</h2>
+      <p class="text-white text-lg mt-1"><%= @user.email %></p>
+    </div>
+
+    <!-- Birthday -->
+    <div class="bg-gray-700 rounded-lg p-4 shadow-sm">
+      <h2 class="text-lg font-semibold text-indigo-300"><i class="fa-solid fa-cake-candles mr-2"></i>Birthday</h2>
+      <p class="text-white text-lg mt-1"><%= @user.birthday.strftime("%B %d, %Y") %></p>
+    </div>
+
+    <!-- Gender -->
+    <div class="bg-gray-700 rounded-lg p-4 shadow-sm">
+      <h2 class="text-lg font-semibold text-indigo-300"><i class="fa-solid fa-venus-mars mr-2"></i>Gender</h2>
+      <p class="text-white text-lg mt-1"><%= @user.gender %></p>
+    </div>
+
+    <!-- Address -->
+    <div class="bg-gray-700 rounded-lg p-4 shadow-sm">
+      <h2 class="text-lg font-semibold text-indigo-300"><i class="fa-solid fa-location-pin mr-2"></i>Address</h2>
+      <p class="text-white text-lg mt-1"><%= @user.address %></p>
+    </div>
+
+    <!-- Role -->
+    <div class="bg-gray-700 rounded-lg p-4 shadow-sm">
+      <h2 class="text-lg font-semibold text-indigo-300"><i class="fa-solid fa-user-tie mr-2"></i>Role</h2>
+      <p class="text-white text-lg mt-1"><%= @user.role.capitalize %></p>
+    </div>
   </div>
 
-  <div class="mb-4">
-    <h2 class="text-lg text-white font-semibold">Birthday</h2>
-    <p class="text-gray-300"><%= @user.birthday.strftime("%B %d, %Y") %></p>
-  </div>
-
-  <div class="mb-4">
-    <h2 class="text-lg text-white font-semibold">Gender</h2>
-    <p class="text-gray-300"><%= @user.gender %></p>
-  </div>
-
-  <div class="mb-4">
-    <h2 class="text-lg text-white font-semibold">Address</h2>
-    <p class="text-gray-300"><%= @user.address %></p>
-  </div>
-
-  <div class="mb-4">
-    <h2 class="text-lg text-white font-semibold">Role</h2>
-    <p class="text-gray-300"><%= @user.role %></p>
-  </div>
-
-  <div class="mt-6 flex justify-end gap-3">
-    <%#= link_to "Edit Profile", profiles_edit_path, class: "bg-yellow-400 hover:bg-yellow-500 text-white py-2 px-4 rounded-md" %>
-    <%= link_to "Back to Dashboard", root_path, class: "bg-indigo-400 hover:bg-indigo-500 text-white py-2 px-4 rounded-md" %>
+  <!-- Back Button -->
+  <div class="w-full mt-8 flex justify-end">
+    <%= link_to "← Back to Dashboard", root_path,
+        class: "bg-indigo-500 hover:bg-indigo-400 text-white font-semibold py-2 px-5 rounded-lg shadow transition duration-300 ease-in-out" %>
   </div>
 </div>
