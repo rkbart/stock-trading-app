@@ -1,5 +1,7 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :confirmable
+  extend FriendlyId
+  friendly_id :full_name, use: :slugged
 
   has_one :portfolio, dependent: :destroy
   has_many :transactions, dependent: :destroy
@@ -11,12 +13,15 @@ class User < ApplicationRecord
   validates :status, inclusion: { in: %w[pending approved rejected] }
   # validates :first_name, :last_name, :birthday, :gender, :address, presence: true, on: :update
 
-
   def balance
     portfolio&.balance || 0
   end
 
- private
+  def full_name
+    "#{first_name}-#{last_name}".parameterize
+  end
+
+  private
 
   def create_potfolio
     Portfolio.create!(user_id: self.id, balance: 0.0)

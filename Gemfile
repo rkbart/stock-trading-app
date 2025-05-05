@@ -70,3 +70,5 @@ gem "tailwindcss-rails", "~> 4.2"
 gem "whenever", require: false
 
 gem "letter_opener"
+
+gem 'friendly_id', '~> 5.4.0'

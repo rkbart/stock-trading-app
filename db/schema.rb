@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_30_180430) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_05_191610) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "friendly_id_slugs", force: :cascade do |t|
+    t.string "slug", null: false
+    t.integer "sluggable_id", null: false
+    t.string "sluggable_type", limit: 50
+    t.string "scope"
+    t.datetime "created_at"
+    t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
+    t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
+    t.index ["sluggable_type", "sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_type_and_sluggable_id"
+  end
 
   create_table "holdings", force: :cascade do |t|
     t.bigint "portfolio_id", null: false
@@ -44,13 +55,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_180430) do
   create_table "transactions", force: :cascade do |t|
     t.integer "transaction_type"
     t.integer "quantity"
-    t.integer "buy_price"
-    t.integer "total_amount"
+    t.decimal "buy_price", precision: 15, scale: 2
+    t.decimal "total_amount", precision: 15, scale: 2
     t.date "transaction_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "symbol"
     t.bigint "user_id"
+    t.bigint "holding_id"
+    t.index ["holding_id"], name: "index_transactions_on_holding_id"
     t.index ["user_id"], name: "index_transactions_on_user_id"
   end
 
@@ -73,13 +86,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_180430) do
     t.date "birthday"
     t.string "gender"
     t.text "address"
+    t.string "slug"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["slug"], name: "index_users_on_slug", unique: true
   end
 
   add_foreign_key "holdings", "portfolios"
   add_foreign_key "holdings", "stocks"
   add_foreign_key "portfolios", "users"
+  add_foreign_key "transactions", "holdings"
   add_foreign_key "transactions", "users"
 end

@@ -13,9 +13,8 @@
         </tr>
       </thead>
       <tbody>
-        <% available_holdings = @holdings.reject { |holding| holding.shares == 0 } %>
-        <% if available_holdings.any? %>
-          <% available_holdings.each do |holding| %>
+        <% if @holdings.any? %>
+          <% @holdings.each do |holding| %>
             <% stock = holding.stock %>
             <tr class="border-b border-gray-700 hover:bg-gray-700/50">
               <td class="py-5 font-bold text-white"><%= stock[:symbol] %></td>

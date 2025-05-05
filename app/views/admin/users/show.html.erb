@@ -13,37 +13,37 @@
     <!-- Name -->
     <div class="bg-gray-700 rounded-lg p-4 shadow-sm">
       <h2 class="text-lg font-semibold text-indigo-300"><i class="fa-solid fa-user mr-2"></i>Name</h2>
-      <p class="text-white text-lg mt-1"><%= @user.first_name %> <%= @user.last_name %></p>
+      <p class="text-white text-lg mt-1"><%= @manage_user.first_name %> <%= @manage_user.last_name %></p>
     </div>
 
     <!-- Email -->
     <div class="bg-gray-700 rounded-lg p-4 shadow-sm">
       <h2 class="text-lg font-semibold text-indigo-300"><i class="fa-solid fa-envelope mr-2"></i>Email</h2>
-      <p class="text-white text-lg mt-1"><%= @user.email %></p>
+      <p class="text-white text-lg mt-1"><%= @manage_user.email %></p>
     </div>
 
     <!-- Birthday -->
     <div class="bg-gray-700 rounded-lg p-4 shadow-sm">
       <h2 class="text-lg font-semibold text-indigo-300"><i class="fa-solid fa-cake-candles mr-2"></i>Birthday</h2>
-      <p class="text-white text-lg mt-1"><%= @user.birthday.strftime("%B %d, %Y") %></p>
+      <p class="text-white text-lg mt-1"><%= @manage_user.birthday.strftime("%B %d, %Y") %></p>
     </div>
 
     <!-- Gender -->
     <div class="bg-gray-700 rounded-lg p-4 shadow-sm">
       <h2 class="text-lg font-semibold text-indigo-300"><i class="fa-solid fa-venus-mars mr-2"></i>Gender</h2>
-      <p class="text-white text-lg mt-1"><%= @user.gender %></p>
+      <p class="text-white text-lg mt-1"><%= @manage_user.gender %></p>
     </div>
 
     <!-- Address -->
     <div class="bg-gray-700 rounded-lg p-4 shadow-sm">
       <h2 class="text-lg font-semibold text-indigo-300"><i class="fa-solid fa-location-pin mr-2"></i>Address</h2>
-      <p class="text-white text-lg mt-1"><%= @user.address %></p>
+      <p class="text-white text-lg mt-1"><%= @manage_user.address %></p>
     </div>
 
     <!-- Role -->
     <div class="bg-gray-700 rounded-lg p-4 shadow-sm">
       <h2 class="text-lg font-semibold text-indigo-300"><i class="fa-solid fa-user-tie mr-2"></i>Role</h2>
-      <p class="text-white text-lg mt-1"><%= @user.role.capitalize %></p>
+      <p class="text-white text-lg mt-1"><%= @manage_user.role.capitalize %></p>
     </div>
   </div>
 

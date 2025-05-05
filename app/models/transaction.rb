@@ -1,5 +1,6 @@
 class Transaction < ApplicationRecord
   belongs_to :user
+  belongs_to :holding, optional: true
   scope :recent_first, -> { order(transaction_date: :desc, id: :desc) }
 
   enum :transaction_type, { buy: 0, sell: 1, deposit: 2 }

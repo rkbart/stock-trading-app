@@ -1,11 +1,9 @@
 class ApplicationController < ActionController::Base
-  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
   before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
-  before_action :set_portfolio,  if: -> { current_user&.trader? }
-  before_action :set_holdings, if: -> { current_user&.trader? }
   before_action :set_user
+  before_action :set_portfolio,  if: -> { current_user&.trader? }
 
   # After Devise sign in
   def after_sign_in_path_for(resource)
@@ -37,14 +35,8 @@ class ApplicationController < ActionController::Base
   private
 
   def set_portfolio
-    @portfolio = current_user.portfolio
+    @portfolio = @user.portfolio
     @balance = @portfolio&.balance || 0
-  end
-
-  def set_holdings
-    @holdings = @portfolio.holdings.includes(:stock).with_shares # scope where shares > 0
-    # @holdings = @portfolio.holdings.includes(:stock).with_shares.by_symbol # alphabetical sorting
-    @total_holdings_value = @holdings.sum { |holding| holding.value }
   end
 
   def set_user

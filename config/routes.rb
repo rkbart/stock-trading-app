@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  get "pages/home"
   devise_for :users
 
   namespace :admin do
@@ -15,12 +14,6 @@ Rails.application.routes.draw do
         get :all_transactions
         post :send_invite
       end
-    end
-  end
-
-  resources :users, only: [] do
-    member do
-      patch :change_role, to: "pages#change_role"
     end
   end
 
@@ -49,14 +42,13 @@ Rails.application.routes.draw do
 
   # Deposits
   resources :deposits, only: [ :new, :create ]
-  get "deposit_form", to: "pages#deposit_form", as: :deposit_form
 
   # Settings
   resource :settings, only: [ :show, :update ]
   patch "settings/update_role", to: "settings#update_role"
 
   # Profiles
-  resource :profile, only: [ :edit, :update, :show ]
+  resource :profile, only: [ :show, :edit, :update ]
 
   # About
   get "about", to: "pages#about"

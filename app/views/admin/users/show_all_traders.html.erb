@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gray-700 flex flex-col justify-around items-center py-6">
+<div class="min-h-screen bg-gray-700 flex flex-col justify-start items-center py-6">
   <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-3xl">
     <h1 class="text-4xl font-semibold text-center text-indigo-500 mb-10">
       <i class="fa-solid fa-users mr-2"></i>All Traders
@@ -6,12 +6,13 @@
 
     <div class="space-y-4">
       <% @list_of_traders.each do |user| %>
-        <div class="bg-gray-50 hover:bg-gray-100 p-4 rounded-lg shadow-sm flex items-center justify-between transition">
+        <div class="bg-gray-50 hover:bg-gray-100 p-4 px-8 rounded-lg shadow-sm flex items-center justify-between transition">
           <div class="text-gray-700 font-medium">
+            <i class="fa-solid fa-envelope mr-2"></i>
             <%= link_to user.email, admin_user_path(user), class: "hover:underline text-blue-600" %>
           </div>
           <div class="text-sm text-gray-500">
-            <%= user.status.capitalize %> | <%= user.role.capitalize %>
+            🟢<%= user.status.capitalize %> 
           </div>
         </div>
       <% end %>

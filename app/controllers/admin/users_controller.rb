@@ -1,28 +1,28 @@
 class Admin::UsersController < ApplicationController
   before_action :require_admin
   before_action :authenticate_user!, unless: :devise_controller?
-  before_action :set_user_in_admin, only: %i[show change_role edit update approve reject]
+  before_action :set_user_in_admin, only: %i[show edit update approve reject]
 
+  rescue_from ActiveRecord::RecordNotFound, with: :user_not_found
   def index
-    @pending_users = User.trader.where(status: "pending")
+    @pending_users = User.trader.where(status: "pending") # enum role
   end
 
   def approve
-    # user = User.find(params[:id])
-    if @user.update!(status: "approved", confirmed_at: Time.now)
-      redirect_to admin_users_path, notice: "#{@user.email} has been approved."
-      UserMailer.with(user: @user).welcome_email.deliver_now
+    # @manage_user = User.find(params[:id])
+    if @manage_user.update(status: "approved", confirmed_at: Time.now)
+      redirect_to admin_users_path, notice: "#{@manage_user.email} has been approved."
+      UserMailer.with(user: @manage_user).welcome_email.deliver_now
     else
       redirect_to admin_users_path, alert: "Could not approve user."
     end
   end
 
   def reject
-    # user = User.find(params[:id])
-    if @user.update(status: "rejected")
-      redirect_to admin_users_path, notice: "#{@user.email} has been rejected."
-      UserMailer.with(user: @user).rejection_email.deliver_now
-      # user.destroy
+    if @manage_user.update(status: "rejected")
+      redirect_to admin_users_path, notice: "#{@manage_user.email} has been rejected."
+      UserMailer.with(user: @manage_user).rejection_email.deliver_now
+      @manage_user.destroy
     else
       redirect_to admin_users_path, alert: "Could not reject user."
     end
@@ -33,8 +33,8 @@ class Admin::UsersController < ApplicationController
   end
 
   def show
-    if @user.first_name.blank? || @user.last_name.blank? || @user.birthday.blank? || @user.gender.blank? || @user.address.blank?
-      redirect_to show_all_traders_admin_users_path, alert: "Trader hasn't completed their profile yet."
+    if @manage_user.first_name.blank? || @manage_user.last_name.blank? || @manage_user.birthday.blank? || @manage_user.gender.blank? || @manage_user.address.blank?
+      redirect_to show_all_traders_admin_users_path, alert: "Could not show information. Trader hasn't completed their profile yet."
     end
   end
 
@@ -58,10 +58,9 @@ class Admin::UsersController < ApplicationController
 
       UserMailer.with(user: user).invitation_email.deliver_now
 
-      flash[:notice] = "Invitation sent to #{email}."
-      redirect_to admin_user_path(user)
+      redirect_to admin_user_path(user), notice: "Invitation sent to #{email}."
     else
-      render :invite_trader, aler: "Please enter a valid email."
+      render :invite_trader, alert: "Please enter a valid email."
     end
   end
 
@@ -69,19 +68,12 @@ class Admin::UsersController < ApplicationController
     @all_transactions = Transaction.all
   end
 
-  def change_role
-    if @user.update(role: params[:user][:role])
-      redirect_to user_path(@user), notice: "User role updated successfully."
-    else
-      redirect_to user_path(@user), alert: "Failed to update role."
-    end
-  end
 
   def edit; end
 
   def update
-    if @user.update(edit_user_params)
-      redirect_to admin_user_path(@user), notice: "Trader profile updated successfully."
+    if @manage_user.update(edit_user_params)
+      redirect_to admin_user_path(@manage_user), notice: "Trader profile updated successfully."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -94,7 +86,13 @@ class Admin::UsersController < ApplicationController
   end
 
   def set_user_in_admin
-    @user = User.find(params[:id])
+    @manage_user = User.friendly.find(params[:id])
+    # @manage_user = User.find(params[:id])
+  end
+
+  def user_not_found
+    flash[:alert] = "User not found."
+    redirect_to show_all_traders_admin_users_path
   end
 
   def edit_user_params

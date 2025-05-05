@@ -21,5 +21,12 @@ class DashboardController < ApplicationController
         }
       end
     end
+
+    if current_user.admin?
+      redirect_to home_path
+      return
+    end
+
+     @total_holdings_value = @portfolio.present? ? @portfolio.total_value : 0
   end
 end

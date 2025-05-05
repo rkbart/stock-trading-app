@@ -16,6 +16,7 @@ class DepositsController < ApplicationController
               turbo_stream.replace("deposit_modal", partial: "shared/empty_frame")
             ]
           end
+
           Transaction.create!(
             user: @user,
             transaction_type: :deposit,
@@ -25,6 +26,7 @@ class DepositsController < ApplicationController
             total_amount: amount,
             transaction_date: Date.today
           )
+
           format.html { redirect_to portfolios_path }
         end
       else
@@ -32,8 +34,8 @@ class DepositsController < ApplicationController
         redirect_to portfolios_path
       end
     else
-      flash[:alert] = "Invalid deposit amount."
-      redirect_to portfolios_path
+      # flash[:alert] = "Invalid deposit amount."
+      render :new
     end
   end
 end

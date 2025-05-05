@@ -51,7 +51,7 @@ class BuysController < ApplicationController
       transaction_date: Date.today
     )
 
-    redirect_to portfolio_path, notice: quantity > 1 ? "Successfully bought #{quantity} shares of #{@selected_symbol}." : "Successfully bought 1 share of #{@selected_symbol}."
+    redirect_to portfolio_path, notice: quantity > 1 ? "Successfully bought #{quantity} shares of #{@selected_symbol} #{price} each." : "Successfully bought 1 share of #{@selected_symbol} for #{price}."
   end
 
   private
