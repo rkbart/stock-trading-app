@@ -36,6 +36,8 @@ class Admin::UsersController < ApplicationController
     if @manage_user.first_name.blank? || @manage_user.last_name.blank? || @manage_user.birthday.blank? || @manage_user.gender.blank? || @manage_user.address.blank?
       redirect_to show_all_traders_admin_users_path, alert: "Could not show information. Trader hasn't completed their profile yet."
     end
+
+    @user_transactions = Transaction.where(user_id: @manage_user.id)
   end
 
   def invite_trader; end
