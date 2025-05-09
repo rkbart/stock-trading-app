@@ -1,4 +1,4 @@
-class TransactionsController < ApplicationController
+class TransactionsController < TradersController
   def index
     @transactions = @user.transactions.recent_first
   end

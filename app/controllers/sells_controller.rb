@@ -1,4 +1,4 @@
-class SellsController < ApplicationController
+class SellsController < TradersController
   include ActionView::Helpers::NumberHelper
   before_action :set_variables
   before_action :set_holdings, only: %i[new create]
@@ -15,7 +15,8 @@ class SellsController < ApplicationController
     @user.portfolio.update!(balance: @user.portfolio.balance + total_amount)
 
     new_shares = @holding.shares - quantity
-    new_total = [ @holding.total - total_amount, 0 ].max
+    # new_total = [ @holding.total - total_amount, 0 ].max 
+    new_total = new_shares.positive? ? (@holding.total * new_shares / @holding.shares) : 0
 
     if new_shares.positive?
       @holding.update!(shares: new_shares, total: new_total)

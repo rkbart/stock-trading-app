@@ -61,4 +61,6 @@ Rails.application.routes.draw do
       root to: "devise/sessions#new", as: :unauthenticated_root
     end
   end
+
+  match "*unmatched", to: "errors#not_found", via: :all
 end

@@ -3,9 +3,8 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_user
-  before_action :set_portfolio,  if: -> { current_user&.trader? }
+  before_action :set_portfolio,  if: -> { @user&.trader? }
 
-  # After Devise sign in
   def after_sign_in_path_for(resource)
     if resource.admin?
       home_path
@@ -13,7 +12,7 @@ class ApplicationController < ActionController::Base
       if resource.first_name.blank? || resource.last_name.blank?
         edit_profile_path
       else
-        super
+        super # default devise redirect
       end
     end
   end
@@ -22,15 +21,12 @@ class ApplicationController < ActionController::Base
     cache_key = "stock_api_response_#{symbol}_#{Date.today}"
 
     Rails.cache.fetch(cache_key, expires_in: 12.hours) do
-      begin
-        AvaApi.fetch_records(symbol)
-      rescue StandardError => e
-        Rails.logger.error("API fetch failed for #{symbol}: #{e.message}")
-        nil
-      end
+      AvaApi.fetch_records(symbol)
+    rescue StandardError => e
+      Rails.logger.error("API fetch failed for #{symbol}: #{e.message}")
+      nil
     end
   end
-
 
   private
 
@@ -41,6 +37,13 @@ class ApplicationController < ActionController::Base
 
   def set_user
     @user = current_user
+  end
+
+  def require_trader!
+    unless @user&.trader?
+      flash[:alert] = "Access denied."
+      redirect_to root_path
+    end
   end
 
   protected

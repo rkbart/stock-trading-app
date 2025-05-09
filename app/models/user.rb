@@ -6,7 +6,7 @@ class User < ApplicationRecord
   has_one :portfolio, dependent: :destroy
   has_many :transactions, dependent: :destroy
 
-  after_create :create_potfolio
+  after_create :create_portfolio
 
   enum :role, { trader: 0, admin: 1 }
 
@@ -18,12 +18,14 @@ class User < ApplicationRecord
   end
 
   def full_name
-    "#{first_name}-#{last_name}".parameterize
+    # email.split("@").first.parameterize
+    "#{email.split('@').first}-#{last_name}".parameterize
   end
 
-  private
+  # private
 
-  def create_potfolio
+  def create_portfolio
     Portfolio.create!(user_id: self.id, balance: 0.0)
   end
+
 end

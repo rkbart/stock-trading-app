@@ -9,10 +9,9 @@ class Admin::UsersController < ApplicationController
   end
 
   def approve
-    # @manage_user = User.find(params[:id])
     if @manage_user.update(status: "approved", confirmed_at: Time.now)
-      redirect_to admin_users_path, notice: "#{@manage_user.email} has been approved."
       UserMailer.with(user: @manage_user).welcome_email.deliver_now
+      redirect_to admin_users_path, notice: "#{@manage_user.email} has been approved."
     else
       redirect_to admin_users_path, alert: "Could not approve user."
     end
@@ -20,9 +19,9 @@ class Admin::UsersController < ApplicationController
 
   def reject
     if @manage_user.update(status: "rejected")
-      redirect_to admin_users_path, notice: "#{@manage_user.email} has been rejected."
       UserMailer.with(user: @manage_user).rejection_email.deliver_now
       @manage_user.destroy
+      redirect_to admin_users_path, notice: "#{@manage_user.email} has been rejected."
     else
       redirect_to admin_users_path, alert: "Could not reject user."
     end
@@ -77,6 +76,7 @@ class Admin::UsersController < ApplicationController
     if @manage_user.update(edit_user_params)
       redirect_to admin_user_path(@manage_user), notice: "Trader profile updated successfully."
     else
+      flash.now[:alert] = "Could not update trader profile."
       render :edit, status: :unprocessable_entity
     end
   end
@@ -89,12 +89,12 @@ class Admin::UsersController < ApplicationController
 
   def set_user_in_admin
     @manage_user = User.friendly.find(params[:id])
-    # @manage_user = User.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    @manage_user = User.find(params[:id])
   end
 
   def user_not_found
-    flash[:alert] = "User not found."
-    redirect_to show_all_traders_admin_users_path
+    redirect_to show_all_traders_admin_users_path, alert: "User not found."
   end
 
   def edit_user_params

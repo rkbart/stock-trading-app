@@ -32,7 +32,7 @@
     <%= turbo_frame_tag "deposit_modal"%>
     <footer class="fixed bottom-0 left-0 w-full bg-gray-800 text-white py-2 px-4 text-center italic">
       <p class="mb-2 text-gray-400"><%= notice %></p>
-      <p class="text-red-400"><%= alert %></p>
+      <p class="text-red-400"><%= flash[:alert] %></p>
     </footer>
   </body>
 </html>

@@ -1,4 +1,4 @@
-class ProfilesController < ApplicationController
+class ProfilesController < TradersController
   def edit; end
   def show
     if @user.first_name.blank? || @user.last_name.blank? || @user.birthday.blank? || @user.gender.blank? || @user.address.blank?

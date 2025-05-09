@@ -16,8 +16,8 @@
           <td class="py-2 px-4 capitalize"><%= user.status %></td>
           <td class="py-2 px-4">
             <div class="flex justify-center space-x-2">
-              <%= button_to "Approve", approve_admin_user_path(user), method: :patch, class: "bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm" %>
-              <%= button_to "Reject", reject_admin_user_path(user), method: :patch, class: "bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm" %>
+              <%= button_to "Approve", approve_admin_user_path(user), method: :patch, data: { turbo_method: :patch, turbo_confirm: "Approve this user?" }, class: "bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm" %>
+              <%= button_to "Reject", reject_admin_user_path(user), method: :patch, data: { turbo_method: :patch, turbo_confirm: "Approve this user?" }, class: "bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm" %>
             </div>
           </td>
         </tr>

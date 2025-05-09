@@ -1,4 +1,4 @@
-class SettingsController < ApplicationController
+class SettingsController < TradersController
   def show; end
 
   def update_role

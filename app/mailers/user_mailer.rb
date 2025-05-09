@@ -18,6 +18,5 @@ class UserMailer < ApplicationMailer
 
   def set_url
     @user = params[:user]
-    @url = "localhost:3000/users/sign_in"
   end
 end

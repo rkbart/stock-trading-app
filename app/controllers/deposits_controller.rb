@@ -1,4 +1,4 @@
-class DepositsController < ApplicationController
+class DepositsController < TradersController
   def create
     amount = params[:amount].to_f
     payment_method = params[:payment_method]

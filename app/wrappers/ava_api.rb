@@ -11,7 +11,6 @@ class AvaApi
 
     request = Net::HTTP::Get.new(url)
     request["x-rapidapi-key"] = ENV["API_KEY"]
-    # request["x-rapidapi-key"] = '2892a51f21mshd2e6029fa6ed0a2p1d83bajsnfe552f480759'
     request["x-rapidapi-host"] = "alpha-vantage.p.rapidapi.com"
 
     response = http.request(request)

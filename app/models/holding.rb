@@ -4,7 +4,7 @@ class Holding < ApplicationRecord
   has_many :transactions, dependent: :destroy
 
   def value
-    shares * stock.current_price
+    shares * stock.current_price # stocks model
   end
 
   def average_price

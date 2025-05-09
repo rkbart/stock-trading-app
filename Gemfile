@@ -63,12 +63,23 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "devise", "~> 4.9"
 
 gem "tailwindcss-rails", "~> 4.2"
 
-gem "whenever", require: false
 
 gem "letter_opener"
 
-gem 'friendly_id', '~> 5.4.0'
+
+group :development, :test do
+  gem "whenever", require: false
+  gem 'friendly_id', '~> 5.4.0'
+  gem "devise", "~> 4.9"
+  gem 'rspec-rails', '~> 8.0.0'
+  gem 'factory_bot_rails'
+  gem 'shoulda-matchers', '~> 6.0'
+  gem 'faker'
+end
+group :test do
+  gem 'rails-controller-testing'
+  gem 'webmock'
+end

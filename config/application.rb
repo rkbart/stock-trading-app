@@ -24,5 +24,6 @@ module StockTradingApp
     config.time_zone = "Asia/Manila"
     config.active_record.default_timezone = :local
     config.eager_load_paths << Rails.root.join("wrappers")
+    config.factory_bot.definition_file_paths = ["custom/factories"]
   end
 end
