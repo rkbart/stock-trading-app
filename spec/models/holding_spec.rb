@@ -17,7 +17,7 @@ RSpec.describe Holding, type: :model do
     end
   end
 
-  describe '#average_price' do
+  describe 'average_price' do
     context 'with shares' do
       let(:holding) { create(:holding, shares: 10, total: 1000.00) }
 

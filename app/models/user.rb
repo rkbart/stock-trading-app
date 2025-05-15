@@ -11,21 +11,18 @@ class User < ApplicationRecord
   enum :role, { trader: 0, admin: 1 }
 
   validates :status, inclusion: { in: %w[pending approved rejected] }
-  # validates :first_name, :last_name, :birthday, :gender, :address, presence: true, on: :update
 
   def balance
     portfolio&.balance || 0
   end
 
   def full_name
-    # email.split("@").first.parameterize
     "#{email.split('@').first}-#{last_name}".parameterize
   end
 
-  # private
+  private
 
   def create_portfolio
     Portfolio.create!(user_id: self.id, balance: 0.0)
   end
-
 end

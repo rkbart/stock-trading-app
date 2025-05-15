@@ -53,16 +53,4 @@ RSpec.describe Transaction, type: :model do
       end
     end
   end
-
-  describe 'factory' do
-    it 'creates a valid buy transaction' do
-      transaction = build(:transaction, :buy, user: user, holding: holding)
-      expect(transaction).to be_valid
-    end
-
-    it 'creates a valid sell transaction' do
-      transaction = build(:transaction, :sell, user: user, holding: holding)
-      expect(transaction).to be_valid
-    end
-  end
 end

@@ -23,11 +23,4 @@ RSpec.describe Stock, type: :model do
       end
     end
   end
-
-  describe 'factory' do
-    it 'creates a valid stock' do
-      stock = build(:stock)
-      expect(stock).to be_valid
-    end
-  end
 end

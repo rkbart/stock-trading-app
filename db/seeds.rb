@@ -9,7 +9,7 @@ admin = User.new(
 )
 admin.save(validate: false) unless User.exists?(email: "rk_bart@yahoo.com")
 
-puts "Admin user created"
+puts "Admin user created!"
 
 stocks = [
   { symbol: 'AAPL', name: 'Apple Inc.' },
